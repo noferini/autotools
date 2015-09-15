@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2001-2012 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,11 +18,10 @@
 # Report from Pavel Roskin.  Report of problems with '--no-force' from
 # Scott James Remnant (Debian #206299)
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CC
-AM_PROG_CC_C_O
 AC_CONFIG_FILES([subdir/Makefile])
 AC_OUTPUT
 END
@@ -44,28 +43,26 @@ $ACLOCAL
 
 for opt in '' --no-force; do
 
+  rm -f compile depcomp
+
   $AUTOMAKE $opt --add-missing
 
   test -f compile
   test -f depcomp
 
   for dir in . subdir; do
-    # FIXME: the logic of this check and other similar ones in other
-    # FIXME: 'distcom*.test' files should be factored out in a common
-    # FIXME: subroutine in 'defs'...
     sed -n -e "
-      /^DIST_COMMON =.*\\\\$/ {
+      /^am__DIST_COMMON =.*/ {
+        b body
         :loop
-        p
         n
-        t clear
-        :clear
+        :body
+        p
         s/\\\\$/\\\\/
         t loop
         s/$/ /
         s/[$tab ][$tab ]*/ /g
         p
-        n
       }" $dir/Makefile.in > $dir/dc.txt
   done
 
@@ -74,7 +71,7 @@ for opt in '' --no-force; do
 
   $FGREP ' $(top_srcdir)/depcomp ' subdir/dc.txt
   # The 'compile' script will be listed in the DIST_COMMON of the top-level
-  # Makefile because it's required in configure.ac (by AM_PROG_CC_C_O).
+  # Makefile because it's required in configure.ac (by AC_PROG_CC).
   $FGREP ' $(top_srcdir)/compile ' dc.txt || $FGREP ' compile ' dc.txt
 
 done

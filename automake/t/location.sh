@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2002-2012 Free Software Foundation, Inc.
+# Copyright (C) 2002-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 # Test for locations in error messages.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AM_CONDITIONAL([COND1], [true])
@@ -48,8 +48,6 @@ END
 # Smash the useless difference of lib file locations.
 smash_useless_diffs ()
 {
-  # FIXME: we could get rid of the second 's,,,' once we improve our
-  # wrapper scripts ...
   sed -e "s,^$am_amdir/\\([a-z]*\.am\\),\\1," \
       -e "s,^automake-$APIVERSION:,automake:," ${1+"$@"};
 }

@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2004-2012 Free Software Foundation, Inc.
+# Copyright (C) 2004-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 # Check the filename-length-max=99 option.
 
-. ./defs || exit 1
+. test-init.sh
 
 echo AC_OUTPUT >> configure.ac
 
@@ -43,8 +43,7 @@ $MAKE distcheck
   mkdir -p 12345678 && cd 12345678 && touch x || exit 1
 done) || skip_ "failed to create deeper directory hierarchy"
 
-$MAKE dist 2>stderr && { cat stderr >&2; exit 1; }
-cat stderr >&2
+run_make -E -e FAIL dist
 grep 'filenames are too long' stderr
 test 2 -eq $(grep -c 12345678 stderr)
 

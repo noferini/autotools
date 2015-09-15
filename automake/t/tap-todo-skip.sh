@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,9 +23,9 @@
 #  - the reasons for TODO and SKIP, if present, are nicely printed in
 #    the testsuite progress output
 
-. ./defs || exit 1
+. test-init.sh
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
 # ----------------------------------------------------- #
 #  Check all possible combinations of:                  #
@@ -60,9 +60,7 @@ done; done; done; done; done >> all.test
 
 cat all.test # For debugging.
 
-$MAKE check >stdout || { cat stdout; exit 1; }
-cat stdout
-
+run_make -O check
 count_test_results total=256 pass=0 fail=0 xpass=0 xfail=128 skip=128 error=0
 
 # -------------------------------------------------------- #
@@ -82,9 +80,7 @@ ok 8 - SKIP
 ok 9
 END
 
-$MAKE check >stdout || { cat stdout; exit 1; }
-cat stdout
-
+run_make -O check
 count_test_results total=9 pass=9 fail=0 xpass=0 xfail=0 skip=0 error=0
 
 :

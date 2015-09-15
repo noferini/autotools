@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,10 +19,10 @@
 # inlined, below.
 
 # FIXME: this test is a good candidate for a conversion to TAP,
-# FIXME: and could be merged with 'txinfo27.test'.
+# FIXME: and could be merged with 'txinfo27.sh'.
 
 required=makeinfo
-. ./defs || exit 1
+. test-init.sh
 
 cwd=$(pwd) || fatal_ "cannot get current working directory"
 
@@ -87,18 +87,19 @@ if test $have_installinfo = yes; then
 
   $MAKE install-info
   test -f $instdir/info/foo.info
-  test -f $instdir/info/dir
+  cat $instdir/info/dir
   $FGREP 'Does nothing at all, but has a nice name' $instdir/info/dir
 
   $MAKE uninstall
   test ! -e $instdir/info/foo.info
+  cat $instdir/info/dir
   $FGREP 'but has a nice name' $instdir/info/dir && exit 1
 
   dir="$destdir/$cwd/$instdir/info"
 
   $MAKE DESTDIR="$cwd/$destdir" install-info
   test -f "$dir"/foo.info
-  test -f "$dir"/dir
+  cat "$dir"/dir
   $FGREP 'Does nothing at all, but has a nice name' "$dir"/dir
   $MAKE DESTDIR="$cwd/$destdir" uninstall
   test ! -e "$dir"/foo.info
@@ -118,8 +119,7 @@ echo error from install-info >&2
 exit 127
 END
 chmod a+x bin/install-info
-$MAKE install-info >output 2>&1 || { cat output; exit 1; }
-cat output
+run_make -M install-info
 test -f $instdir/info/foo.info
 test ! -e $instdir/info/dir
 grep 'error from install-info' output && exit 1
@@ -142,10 +142,10 @@ if test $have_installinfo = yes; then
 END
   $MAKE install-info
   test -f $instdir/info/foo.info
-  test -f $instdir/info/dir
+  cat $instdir/info/dir
   $MAKE uninstall
   test ! -e $instdir/info/foo.info
-  test -f $instdir/info/dir
+  cat $instdir/info/dir
   $FGREP 'but has a nice name' $instdir/info/dir && exit 1
   : For shells with busted 'set -e'.
 fi
@@ -170,6 +170,7 @@ fi
 chmod a-w $instdir/info/dir
 for val in no NO n; do
   env AM_UPDATE_INFO_DIR="$val" $MAKE uninstall
+  cat $instdir/info/dir
   $FGREP 'Does nothing at all, but has a nice name' $instdir/info/dir
 done
 
@@ -178,7 +179,7 @@ if test $have_installinfo = yes; then
     rm -rf $instdir
     env AM_UPDATE_INFO_DIR="$val" $MAKE install-info
     test -f $instdir/info/foo.info
-    test -f $instdir/info/dir
+    cat $instdir/info/dir
     env AM_UPDATE_INFO_DIR="$val" $MAKE uninstall
     test ! -e $instdir/info/foo.info
     $FGREP 'but has a nice name' $instdir/info/dir && exit 1

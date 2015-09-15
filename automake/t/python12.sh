@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2004-2012 Free Software Foundation, Inc.
+# Copyright (C) 2004-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # Ensure DESTDIR is not included in byte-compiled files.
 
 required=python
-. ./defs || exit 1
+. test-init.sh
 
 cat >>configure.ac <<'EOF'
 AM_PATH_PYTHON
@@ -36,19 +36,19 @@ $ACLOCAL
 $AUTOCONF
 $AUTOMAKE --add-missing
 
-instdir=$(pwd)/inst
+destdir=$(pwd)/inst
 mkdir inst build
 cd build
 ../configure --prefix="/usr"
-$MAKE install DESTDIR=$instdir
+$MAKE install DESTDIR=$destdir
 
 # Perfunctory test that the files were created.
-test -f "$instdir/usr/share/my/my.py"
-test -f "$instdir/usr/share/my/my.pyc"
-test -f "$instdir/usr/share/my/my.pyo"
+test -f "$destdir/usr/share/my/my.py"
+pyo=$(pyc_location -p "$destdir/usr/share/my/my.pyo")
+pyc=$(pyc_location -p "$destdir/usr/share/my/my.pyc")
 
 # If DESTDIR has made it into the byte compiled files, fail the test.
-$FGREP "$instdir" "$instdir/usr/share/my/my.pyo" \
-                  "$instdir/usr/share/my/my.pyc" && exit 1
+st=0; $FGREP "$destdir" "$pyc" "$pyo" || st=$?
+test $st -eq 1
 
 :

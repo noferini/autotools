@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2010-2012 Free Software Foundation, Inc.
+# Copyright (C) 2010-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 # Original report from James Amundson about file names with spaces.
 # Other characters added by Paul Eggert.
 
-. ./defs || exit 99
+. test-init.sh
 
 # Usage: is_in_list ITEM [LIST...]
 is_in_list ()
@@ -285,7 +285,13 @@ for test_name in $test_names_list; do
         ;;
       dest)
         build=build-$test_name
-        dest=$ocwd/$test_string
+        # Also use $test_name in the definition of $dest, to avoid
+        # interferences among different tests in case $test_string
+        # is strangely munged (which is not unexpected, considering
+        # how tricky its characters are).  With some shells, this
+        # has already happened (at least on OpenIndiana 11 and on
+        # Solaris 10).
+        dest=$ocwd/dest-$test_name/$test_string
         mkdir "$build" || fatal_ "cannot create '$build'"
         ;;
       *)
@@ -302,7 +308,7 @@ for test_name in $test_names_list; do
     r=ok
     ../configure --prefix "/$test_string-prefix" \
       && $MAKE all \
-      && DESTDIR="$dest" file="./$test_string" $MAKE -e test-inst \
+      && DESTDIR="$dest" file="./$test_string" $MAKE test-inst \
       || r='not ok'
 
     description="$test_name in ${where}dir"

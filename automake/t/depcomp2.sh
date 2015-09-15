@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2001-2012 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 # From Pavel Roskin.
 
 required=cc
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_CONFIG_FILES([subdir/Makefile])
@@ -45,6 +45,9 @@ $AUTOMAKE --add-missing
 $AUTOCONF
 ./configure 2>stderr || { cat stderr >&2; exit 1; }
 cat stderr >&2
-test ! -s stderr
+# Ignore warning messages sometimes seen on Mac OS X; they are
+# not automake's fault anyway, but either autoconf's or Mac's.
+sed '/rm:.*conftest\.dSYM/d' stderr >stderr2
+test -s stderr2 && { cat stderr2; exit 1; }
 
 :

@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 # with the Automake test harness".
 
 am_create_testdir=empty
-. ./defs || exit 1
+. test-init.sh
 
 cat > Makefile.am <<'END'
 TEST_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
@@ -31,10 +31,9 @@ END
 cat > configure.ac <<'END'
 AC_INIT([GNU Try Tap], [1.0], [bug-automake@gnu.org])
 AC_CONFIG_AUX_DIR([build-aux])
-AM_INIT_AUTOMAKE([foreign parallel-tests -Wall -Werror])
+AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AC_CONFIG_FILES([Makefile])
 AC_REQUIRE_AUX_FILE([tap-driver.sh])
-AC_PROG_AWK
 AC_OUTPUT
 END
 
@@ -83,8 +82,7 @@ case $MAKE in *\ -j*) skip_ "can't work easily with concurrent make";; esac
 # Prevent Sun Distributed Make from trying to run in parallel.
 DMAKE_MODE=serial; export DMAKE_MODE
 
-$MAKE check >stdout && { cat stdout; exit 1; }
-cat stdout
+run_make -O -e FAIL check
 
 cat > exp <<'END'
 PASS: foo.test 1 - Swallows fly
@@ -106,10 +104,9 @@ diff exp got
 
 grep '^Please report to bug-automake@gnu\.org$' stdout
 
-env \
+run_make -O check \
   TESTS='foo.test baz.test' \
-  TEST_LOG_DRIVER_FLAGS='--comments --ignore-exit' \
-  $MAKE -e check >stdout || { cat stdout; exit 1; }
+  TEST_LOG_DRIVER_FLAGS='--comments --ignore-exit'
 
 cat > exp <<'END'
 PASS: foo.test 1 - Swallows fly

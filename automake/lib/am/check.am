@@ -1,5 +1,5 @@
 ## automake - create Makefile.in from Makefile.am
-## Copyright (C) 2001-2012 Free Software Foundation, Inc.
+## Copyright (C) 2001-2014 Free Software Foundation, Inc.
 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 am__tty_colors_dummy = \
   mgn= red= grn= lgn= blu= brg= std=; \
   am__color_tests=no
-if %?COLOR%
+
 am__tty_colors = { \
   $(am__tty_colors_dummy); \
   if test "X$(AM_COLOR_TESTS)" = Xno; then \
@@ -40,13 +40,10 @@ am__tty_colors = { \
     std='[m'; \
   fi; \
 }
-else !%?COLOR%
-am__tty_colors = $(am__tty_colors_dummy)
-endif !%?COLOR%
 
 .PHONY: check-TESTS
 
-if %?PARALLEL_TESTS%
+if !%?SERIAL_TESTS%
 
 include inst-vars.am
 
@@ -221,7 +218,7 @@ $(AM_TESTS_ENVIRONMENT) $(TESTS_ENVIRONMENT)
 # '$bases'.  This honors runtime overriding of TESTS and TEST_LOGS.  Sadly,
 # we cannot use something simpler, involving e.g., "$(TEST_LOGS:.log=)",
 # since that might cause problem with VPATH rewrites for suffix-less tests.
-# See also 'test-harness-vpath-rewrite.test' and 'test-trs-basic.test'.
+# See also 'test-harness-vpath-rewrite.sh' and 'test-trs-basic.sh'.
 am__set_TESTS_bases = \
   bases='$(TEST_LOGS)'; \
   bases=`for i in $$bases; do echo $$i; done | sed 's/\.log$$//'`; \
@@ -241,7 +238,7 @@ am__set_TESTS_bases = \
 	$(MAKE) $(AM_MAKEFLAGS) $<
 
 # Leading 'am--fnord' is there to ensure the list of targets does not
-# exand to empty, as could happen e.g. with make check TESTS=''.
+# expand to empty, as could happen e.g. with make check TESTS=''.
 am--fnord $(TEST_LOGS) $(TEST_LOGS:.log=.trs): $(am__force_recheck)
 am--force-recheck:
 	@:
@@ -277,7 +274,9 @@ $(TEST_SUITE_LOG): $(TEST_LOGS)
 	if test -n "$$am__remaking_logs"; then \
 	  echo "fatal: making $(TEST_SUITE_LOG): possible infinite" \
 	       "recursion detected" >&2; \
-	else \
+## Invoking this unconditionally could cause a useless "make all" to
+## be invoked when '$redo_logs' expands to empty (automake bug#16302).
+	elif test -n "$$redo_logs"; then \
 	  am__remaking_logs=yes $(MAKE) $(AM_MAKEFLAGS) $$redo_logs; \
 	fi; \
 	if $(am__make_dryrun); then :; else \
@@ -450,7 +449,7 @@ recheck: all %CHECK_DEPS%
 ##     we must ensure that any '.log' and '.trs' file referring to such
 ##     test are preserved, so that future "make recheck" invocations
 ##     will still try to re-compile and re-run it (automake bug#11791).
-## The tricky recusrive make invocation below should cater to such
+## The tricky recursive make invocation below should cater to such
 ## requirements.
 	$(MAKE) $(AM_MAKEFLAGS) $(TEST_SUITE_LOG) \
 	        am__force_recheck=am--force-recheck \
@@ -463,7 +462,9 @@ AM_RECURSIVE_TARGETS += check recheck
 
 .PHONY: recheck
 
-else !%?PARALLEL_TESTS%
+else %?SERIAL_TESTS%
+
+## Obsolescent serial testsuite driver.
 
 check-TESTS: $(TESTS)
 	@failed=0; all=0; xfail=0; xpass=0; skip=0; \
@@ -569,4 +570,4 @@ check-TESTS: $(TESTS)
 	  test "$$failed" -eq 0; \
 	else :; fi
 
-endif !%?PARALLEL_TESTS%
+endif %?SERIAL_TESTS%

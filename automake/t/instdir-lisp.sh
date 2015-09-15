@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2009-2012 Free Software Foundation, Inc.
+# Copyright (C) 2009-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # If $(lispdir) is the empty string, then nothing should be installed there.
 
 required=emacs
-. ./defs || exit 1
+. test-init.sh
 
 cat >>configure.ac <<'END'
 AM_PATH_LISPDIR
@@ -42,17 +42,7 @@ cd build
 ../configure --prefix="$instdir"
 $MAKE
 
-lispdir=
-export lispdir
-
-$MAKE -e install
-test ! -e "$instdir"
-$MAKE -e install DESTDIR="$destdir"
-test ! -e "$instdir"
-test ! -e "$destdir"
-$MAKE -e uninstall > stdout || { cat stdout; exit 1; }
-cat stdout
-grep 'rm -f' stdout && exit 1
-$MAKE -e uninstall DESTDIR="$destdir"
+nulldirs='lispdir='
+null_install
 
 :

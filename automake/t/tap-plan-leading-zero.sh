@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@
 #  - TAP "SKIP" plans with multiple zeroes, as in "1..00 # SKIP"
 # This is consistent with the behaviour of the 'prove' utility.
 
-. ./defs || exit 1
+. test-init.sh
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
 cat > a.test <<END
 1..01
@@ -47,10 +47,7 @@ done >> d.test
 echo 1..00 > e.test
 echo '1..000 # SKIP' > f.test
 
-env TESTS='a.test b.test c.test d.test e.test f.test' \
-  $MAKE -e check >stdout || { cat stdout; exit 1; }
-cat stdout
-
+run_make -O TESTS='a.test b.test c.test d.test e.test f.test' check
 count_test_results total=115 pass=113 xfail=0 skip=2 fail=0 xpass=0 error=0
 
 :

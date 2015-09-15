@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2001-2012 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 # Another test related to PR 279.
 # Multiple DEPENDENCIES on conditionals.
-# Please keep this in sync with sister test pr279.test.
+# Please keep this in sync with sister test 'pr279.sh'.
 #
 # == Report ==
 # When defining xxx_LDADD and xxx_DEPENDENCIES variables where the
@@ -24,7 +24,7 @@
 # fail with messages like:
 #       foo_DEPENDENCIES was already defined in condition TRUE, ...
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CC

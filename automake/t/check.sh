@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2001-2012 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # Test Automake style tests.
 
 # For gen-testsuite-part: ==> try-with-serial-tests <==
-. ./defs || exit 1
+. test-init.sh
 
 cat > Makefile.am << 'END'
 TESTS = frob.test
@@ -35,7 +35,7 @@ grep 'check-DEJAGNU' Makefile.in && exit 1
 sed -n '/^\.PHONY:/,/^$/p' Makefile.in | $EGREP '(^| )check-TESTS($| )'
 
 # 'check' should depend directly on 'check-am' (similar tests are
-# in check2.test and check3.test).
+# in check2.sh and check3.sh).
 $EGREP '^check:.* check-am( |$)' Makefile.in
 
 :

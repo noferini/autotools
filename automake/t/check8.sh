@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2008-2012 Free Software Foundation, Inc.
+# Copyright (C) 2008-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,11 +18,10 @@
 
 # For gen-testsuite-part: ==> try-with-serial-tests <==
 required='cc native'
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CC
-AM_PROG_CC_C_O
 AC_OUTPUT
 END
 
@@ -65,17 +64,14 @@ $AUTOCONF
 $AUTOMAKE -a
 
 ./configure
-AM_COLOR_TESTS=always $MAKE check >stdout 2>stderr &&
-  { cat stdout; cat stderr >&2; exit 1; }
-cat stdout
-cat stderr >&2
+run_make -E -O -e FAIL check
 grep 'XPASS.* foo$' stdout
 grep '^[^X]*PASS.* sub/foo$' stdout
 grep '^[^X]*PASS.* bar' stdout
 grep '^[^X]*PASS.* sub/bar' stdout
 grep '^[^X]*FAIL.* baz' stdout
 grep 'XFAIL.* sub/baz' stdout
-# 'parallel-tests' should not add circular dependencies.
+# The parallel test driver should cause circular dependencies.
 # Look for known warnings from a couple of 'make' implementations.
 grep -i 'circular.*dependency' stderr && exit 1
 grep -i 'graph cycles' stderr && exit 1
@@ -85,8 +81,7 @@ $MAKE distclean
 mkdir build
 cd build
 ../configure
-$MAKE check >stdout && { cat stdout; exit 1; }
-cat stdout
+run_make -O -e FAIL check
 # Note: we are not grepping for the space in the lines from the 'foo'
 # tests, due to the Solaris make VPATH rewriting (if we fix that, we
 # can still write a separate test for it).

@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,9 +18,9 @@
 #  - don't spuriously recognize lines that are "almost" TAP lines as
 #    real TAP lines
 
-. ./defs || exit 1
+. test-init.sh
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
 echo 1..5 > all.test
 
@@ -83,7 +83,7 @@ set -x # Reset shell xtraces.
 
 # The prove(1) utility doesn't bail out on these, so our driver
 # shouldn't either.
-# See comments in 'tap-bailout-leading-space.test' for an explanation
+# See comments in 'tap-bailout-leading-space.sh' for an explanation
 # of why we don't have a whitespace-prepended "Bail out!" line here.
 cat >> all.test <<'END'
 bailout
@@ -105,9 +105,7 @@ cat all.test \
   && test $(grep -c '^not ok1$' all.test) -eq 1 \
   || framework_failure_ "creating all.test"
 
-$MAKE check >stdout || { cat stdout; exit 1; }
-cat stdout
-
+run_make -O check
 count_test_results total=5 pass=5 fail=0 xpass=0 xfail=0 skip=0 error=0
 
 :

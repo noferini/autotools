@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,9 +18,9 @@
 # for '.m4' files shouldn't prevent "make" from diagnosing a missing
 # required '.m4' file from a distribution tarball.
 # See discussion about automake bug#9768.
-# See also sister test 'dist-missing-included-m4.test'.
+# See also sister test 'dist-missing-included-m4.sh'.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac <<'END'
 m4_pattern_forbid([^MY_])
@@ -58,8 +58,7 @@ for vpath in false :; do
     cd $distdir
     ./configure
   fi
-  $MAKE >output 2>&1 && { cat output; exit 1; }
-  cat output
+  run_make -e FAIL -M
   # This error will come from autoconf, not make, so we can be stricter
   # in our grepping of it.
   grep 'possibly undefined .*MY_ZARDOZ' output

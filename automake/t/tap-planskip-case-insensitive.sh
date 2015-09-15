@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,9 +17,9 @@
 # TAP support:
 #  - "SKIP" keyword in a TAP plan is case-insensitive
 
-. ./defs || exit 1
+. test-init.sh
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
 # These nested loops below are clearer without indentation.
 i=0
@@ -32,9 +32,7 @@ for c4 in p P; do
   echo "1..0 # $c1$c2$c3$c4 foobar" > $j.test
 done; done; done; done
 
-TESTS="$(echo *.test)" $MAKE -e check >stdout || { cat stdout; exit 1; }
-cat stdout
-
+run_make -O TESTS="$(echo *.test)" check
 count_test_results total=16 pass=0 fail=0 xpass=0 xfail=0 skip=16 error=0
 
 for tst in *.test; do

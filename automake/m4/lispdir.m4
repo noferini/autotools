@@ -3,13 +3,11 @@
 ## From Ulrich Drepper
 ## Almost entirely rewritten by Alexandre Oliva
 ## ------------------------
-# Copyright (C) 1996-2012 Free Software Foundation, Inc.
+# Copyright (C) 1996-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
-
-# serial 11
 
 # AM_PATH_LISPDIR
 # ---------------
@@ -36,7 +34,7 @@ AC_DEFUN([AM_PATH_LISPDIR],
   #  which is non-obvious for non-emacs users.
   # Redirecting /dev/null should help a bit; pity we can't detect "broken"
   #  emacsen earlier and avoid running this altogether.
-  AC_RUN_LOG([$EMACS -batch -q -eval '(while load-path (princ (concat (car load-path) "\n")) (setq load-path (cdr load-path)))' </dev/null >conftest.out])
+  AC_RUN_LOG([$EMACS -batch -Q -eval '(while load-path (princ (concat (car load-path) "\n")) (setq load-path (cdr load-path)))' </dev/null >conftest.out])
 	am_cv_lispdir=`sed -n \
        -e 's,/$,,' \
        -e '/.*\/lib\/x*emacs\/site-lisp$/{s,.*/lib/\(x*emacs/site-lisp\)$,${libdir}/\1,;p;q;}' \
@@ -51,5 +49,3 @@ AC_DEFUN([AM_PATH_LISPDIR],
 ])
 AC_SUBST([lispdir])
 ])# AM_PATH_LISPDIR
-
-AU_DEFUN([ud_PATH_LISPDIR], [AM_PATH_LISPDIR])

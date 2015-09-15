@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,10 +19,10 @@
 # Incidentally, this test also checks that the testsuite summary doesn't
 # give any bug-report address if it's not defined.
 
-. ./defs || exit 1
+. test-init.sh
 
 for s in trivial-test-driver extract-testsuite-summary.pl; do
-  cp "$am_testauxdir/$s" . || fatal_ "failed to fetch auxiliary script $s"
+  cp "$am_testaux_srcdir/$s" . || fatal_ "failed to fetch auxiliary script $s"
 done
 
 br='============================================================================'
@@ -91,7 +91,7 @@ $AUTOCONF
 
 ./configure
 
-($MAKE check || : > make.fail) | tee stdout
+($MAKE check || touch make.fail) | tee stdout
 test -f make.fail
 
 $PERL extract-testsuite-summary.pl stdout > summary.got

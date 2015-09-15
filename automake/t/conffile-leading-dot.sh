@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2012 Free Software Foundation, Inc.
+# Copyright (C) 2012-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 # broken in that case.
 
 required=GNUmake
-. ./defs || exit 1
+. test-init.sh
 
 cat > configure.ac << END
 AC_INIT([$me], [1.0])
@@ -54,8 +54,7 @@ $sleep
 touch Makefile.am
 # Check that remake rules do truly break -- otherwise automake is
 # giving a bogus warning.
-$MAKE 2>stderr && { cat stderr >&2; exit 1; }
-cat stderr >&2
+run_make -e FAIL -E
 grep "config\\.status:.*invalid argument.*Makefile" stderr
 
 :

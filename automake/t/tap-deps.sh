@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # Basic TAP test protocol support:
 #  - dependencies between test scripts
 
-. ./defs || exit 1
+. test-init.sh
 
 cat > Makefile.am << 'END'
 # The tests are *deliberately* listed in inversed order here.
@@ -26,7 +26,7 @@ b.log: a.log
 c.log: b.log
 END
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
 cat > a.test << 'END'
 #!/bin/sh
@@ -62,9 +62,7 @@ END
 
 chmod a+x *.test
 
-$MAKE check >stdout || { cat stdout; exit 1; }
-cat stdout
-
+run_make -O check
 count_test_results total=5 pass=5 fail=0 xpass=0 xfail=0 skip=0 error=0
 
 cat > exp << 'END'

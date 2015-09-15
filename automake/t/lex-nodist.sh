@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,17 +15,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Checks for .c files derived from non-distributed .l sources.
-# The test 'lex-pr204.test' does similar check with AM_MAINTAINER_MODE
+# The test 'lex-pr204.sh' does similar check with AM_MAINTAINER_MODE
 # enabled.
-# The tests 'yacc-nodist.test' and 'yacc-pr204.test' does similar checks
+# The tests 'yacc-nodist.sh' and 'yacc-pr204.sh' does similar checks
 # for yacc-generated .c and .h files.
 
 required='cc lex'
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CC
-dnl Sister test 'lex-pr204.test' should use 'AC_PROG_LEX' instead.
+dnl Sister test 'lex-pr204.sh' should use 'AC_PROG_LEX' instead.
 AM_PROG_LEX
 AC_OUTPUT
 END

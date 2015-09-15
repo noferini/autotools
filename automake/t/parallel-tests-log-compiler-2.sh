@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2009-2012 Free Software Foundation, Inc.
+# Copyright (C) 2009-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,10 +17,10 @@
 # Check parallel-tests features:
 # - per-extension "test runners" a.k.a. "log compilers" (xxx_LOG_COMPILER
 #   and xxx_LOG_FLAGS), when some tests are PROGRAMS.
-# See also related test 'parallel-tests-log-compiler-1.test'.
+# See also related test 'parallel-tests-log-compiler-1.sh'.
 
 required='cc native'
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CC

@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,11 +18,11 @@
 # files in a dist tarball (interaction with '--install').
 # See automake bug#9037.
 
-. ./defs || exit 1
+. test-init.sh
 
 cwd=$(pwd) || fatal_ "cannot get current working directory"
 
-cp "$am_testauxdir"/distcheck-hook-m4.am . \
+cp "$am_testaux_srcdir"/distcheck-hook-m4.am . \
   || fatal_ "cannot fetch makefile fragment 'distcheck-hook-m4.am'"
 
 cat > Makefile.am << 'END'
@@ -79,9 +79,7 @@ AC_DEFUN([MY_ZARDOZ], [:])
 END
 
 $MAKE # Rebuild configure and makefiles.
-$MAKE distcheck >output 2>&1 && { cat output; exit 1; }
-cat output
-
+run_make -M -e FAIL distcheck
 $EGREP "required m4 file.* outdated.* baz.m4( |$)" output
 check_no_spurious_error
 # Check that we don't complain for files that aren't outdated.
@@ -121,8 +119,7 @@ AC_DEFUN([MY_FNORD], [:])
 END
 
 $MAKE # Rebuild configure and makefiles.
-$MAKE distcheck >output 2>&1 && { cat output; exit 1; }
-cat output
+run_make -M -e FAIL distcheck
 $EGREP "required m4 file.* outdated.* fnord.m4( |$)" output
 check_no_spurious_error
 # Check that we don't complain for files that aren't outdated.

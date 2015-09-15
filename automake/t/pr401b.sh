@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2005-2012 Free Software Foundation, Inc.
+# Copyright (C) 2005-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,10 +15,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Check support for AC_CONFIG_LIBOBJ_DIR vs LTLIBOBJS.
-# (pr401.test and pr401c.test do the same for LIBOBJS and ALLOCA)
+# (pr401.sh and pr401c.sh do the same for LIBOBJS and ALLOCA)
 
 required='cc libtoolize'
-. ./defs || exit 1
+. test-init.sh
 
 mkdir lib src
 
@@ -45,7 +45,6 @@ cat >>configure.ac << 'EOF'
 ## These lines are activated for later tests
 #: AC_CONFIG_LIBOBJ_DIR([lib])
 AC_PROG_CC
-#x AM_PROG_CC_C_O
 AC_LIBOBJ([feep])
 AC_LIBSOURCE([feep.c])
 AM_PROG_AR
@@ -94,8 +93,8 @@ $MAKE distcheck
 # Invocation of AC_CONFIG_LIBOBJ_DIR may be necessary for reasons
 # unrelated to Automake or Makefile.am layout.
 
-sed 's/#: //' configure.ac >configure.int
-mv -f configure.int configure.ac
+sed 's/#: //' configure.ac >configure.tmp
+mv -f configure.tmp configure.ac
 
 $ACLOCAL
 $AUTOCONF
@@ -118,8 +117,8 @@ mv -f src/t src/Makefile.am
 ## Test using LTLIBOBJS from a sibling directory. ##
 ## ---------------------------------------------- ##
 
-sed 's/#x //; s/lib\/Makefile //' configure.ac >configure.int
-mv -f configure.int configure.ac
+sed 's/lib\/Makefile //' configure.ac >configure.tmp
+mv -f configure.tmp configure.ac
 
 cat >Makefile.am <<'EOF'
 SUBDIRS = src
@@ -155,8 +154,8 @@ $MAKE distclean
 ## Test using LTLIBOBJS from parent directory. ##
 ## ------------------------------------------- ##
 
-sed 's/^.*src\/Makefile.*$//' configure.ac >configure.int
-mv -f configure.int configure.ac
+sed 's/^.*src\/Makefile.*$//' configure.ac >configure.tmp
+mv -f configure.tmp configure.ac
 
 cat >Makefile.am <<'EOF'
 AUTOMAKE_OPTIONS = subdir-objects

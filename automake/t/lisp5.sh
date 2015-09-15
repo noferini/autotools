@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2003-2012 Free Software Foundation, Inc.
+# Copyright (C) 2003-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,11 +14,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# Same as lisp4.test, but using the now-recommended way to install
+# Same as 'lisp4.sh', but using the now-recommended way to install
 # non-bytecompiled *.el files.
 
 required=emacs
-. ./defs || exit 1
+. test-init.sh
 
 cat > Makefile.am << 'EOF'
 lisp_DATA = am-one.el am-two.el am-three.el
@@ -31,7 +31,6 @@ test:
 	test ! -f am-one.elc
 	test ! -f am-two.elc
 	test ! -f am-three.elc
-	test ! -f elc-stamp
 
 install-test: install
 	test -f "$(lispdir)/am-one.el"

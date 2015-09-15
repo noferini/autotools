@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 1996-2012 Free Software Foundation, Inc.
+# Copyright (C) 1996-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,12 +16,12 @@
 
 # Test to make sure LIBOBJS file cannot be mentioned explicitly.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
+AC_PROG_CC
 AC_PROG_RANLIB
 AM_PROG_AR
-AC_PROG_CC
 AC_LIBOBJ([fsusage])
 AC_OUTPUT
 END

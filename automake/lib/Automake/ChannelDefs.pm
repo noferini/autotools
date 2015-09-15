@@ -1,4 +1,4 @@
-# Copyright (C) 2002-2012 Free Software Foundation, Inc.
+# Copyright (C) 2002-2014 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -156,7 +156,7 @@ register_channel 'automake', type => 'fatal', backtrace => 1,
 
 register_channel 'extra-portability', type => 'warning', silent => 1;
 register_channel 'gnu', type => 'warning';
-register_channel 'obsolete', type => 'warning', silent => 1;
+register_channel 'obsolete', type => 'warning';
 register_channel 'override', type => 'warning', silent => 1;
 register_channel 'portability', type => 'warning', silent => 1;
 register_channel 'portability-recursive', type => 'warning', silent => 1;

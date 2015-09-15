@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,10 +17,10 @@
 # Check that C++ source files derived from non-distributed Lex sources
 # are cleaned by "make clean", while C++ source files derived from
 # distributed Lex sources are cleaned by "make maintainer-clean".
-# See also sister test 'lex-clean.test'.
+# See also sister test 'lex-clean.sh'.
 
 required='c++ lex'
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CXX

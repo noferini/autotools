@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,9 +18,9 @@
 #  - test results seen in a TAP stream that has a "plan with SKIP" are
 #    flagged as errors, even if all of them are "SKIP" results.
 
-. ./defs || exit 1
+. test-init.sh
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
 cat > foo.test <<END
 1..0 # SKIP
@@ -32,9 +32,7 @@ ok 1 # SKIP
 1..0 # SKIP
 END
 
-TESTS='foo.test bar.test' $MAKE -e check >stdout && { cat stdout; exit 1; }
-cat stdout
-
+run_make -O -e FAIL TESTS='foo.test bar.test' check
 count_test_results total=5 pass=0 fail=0 xpass=0 xfail=0 skip=2 error=3
 
 # Don't be too strict w.r.t. the format of the "skip whole test" message.

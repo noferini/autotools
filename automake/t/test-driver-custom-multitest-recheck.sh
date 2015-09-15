@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,13 +18,13 @@
 # that allow multiple testcases in a single test script.  This test not
 # only checks implementation details in Automake's custom test drivers
 # support, but also serves as a "usability test" for our APIs.
-# See also related tests 'test-driver-custom-multitest-recheck2.test'
-# and 'parallel-tests-recheck-override.test'.
-# Keep in sync with 'tap-recheck.test'.
+# See also related tests 'test-driver-custom-multitest-recheck2.sh'
+# and 'parallel-tests-recheck-override.sh'.
+# Keep in sync with 'tap-recheck.sh'.
 
-. ./defs || exit 1
+. test-init.sh
 
-cp "$am_testauxdir"/trivial-test-driver . \
+cp "$am_testaux_srcdir"/trivial-test-driver . \
   || fatal_ "failed to fetch auxiliary script trivial-test-driver"
 
 cat >> configure.ac << 'END'
@@ -86,13 +86,13 @@ $AUTOMAKE
 do_recheck ()
 {
   case $* in
-    --fail) on_bad_rc='&&';;
-    --pass) on_bad_rc='||';;
+    --fail) status=FAIL;;
+    --pass) status=0;;
          *) fatal_ "invalid usage of function 'do_recheck'";;
   esac
   rm -f *.run
-  eval "\$MAKE recheck >stdout $on_bad_rc { cat stdout; ls -l; exit 1; }; :"
-  cat stdout; ls -l
+  run_make -O -e $status recheck || { ls -l; exit 1; }
+  ls -l
 }
 
 for vpath in : false; do
@@ -121,8 +121,7 @@ for vpath in : false; do
   count_test_results total=0 pass=0 fail=0 xpass=0 xfail=0 skip=0 error=0
 
   : Run the tests for the first time.
-  $MAKE check >stdout && { cat stdout; exit 1; }
-  cat stdout
+  run_make -O -e FAIL check
   ls -l
   # All the test scripts should have run.
   test -f a.run

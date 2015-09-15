@@ -1,7 +1,8 @@
 #! /bin/sh
 # Automatically generated test.  DO NOT EDIT BY HAND!
 am_create_testdir=empty depmode=makedepend depcomp_with_libtool=no
-required="cc makedepend"
-. ./defs || exit 1
+required="cc makedepend -c-o"
+. test-init.sh
 plan_ 28
-. "$am_testauxdir/depcomp.sh"; exit $?
+. depcomp.sh
+exit $?

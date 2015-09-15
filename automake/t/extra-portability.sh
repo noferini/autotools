@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 #   2. '-Wno-portability' must imply '-Wno-extra-portability'.
 #   3. '-Wall' must imply '-Wextra-portability'.
 
-. ./defs || exit 1
+. test-init.sh
 
 # We want (almost) complete control over automake options.
 AUTOMAKE="$am_original_AUTOMAKE --foreign -Werror"
@@ -40,7 +40,7 @@ $ACLOCAL
 
 cat >Makefile.am <<END
 EXTRA_LIBRARIES = libfoo.a
-libfoo_a_SOURCES = sub/foo.c
+libfoo_a_SOURCES = foo.c
 END
 
 # Sanity check: extra-portability warnings causes the expected error.
@@ -62,30 +62,29 @@ $AUTOMAKE -Wall -Wno-portability
 # Now, a setup where also a "simple" portability warning is present.
 #
 
-# Per-target flags require the use of AM_PROG_CC_C_O in configure.ac.
-echo libfoo_a_CPPFLAGS = -Dwhatever >> Makefile.am
+echo 'var = $(foo--bar)' >> Makefile.am
 
 # Enabling extra-portability enables portability as well ...
 AUTOMAKE_fails -Wextra-portability
-grep 'requires.*AM_PROG_CC_C_O' stderr
+grep 'foo--bar' stderr
 grep 'requires.*AM_PROG_AR' stderr
 # ... even if it had been previously disabled.
 AUTOMAKE_fails -Wno-portability -Wextra-portability
-grep 'requires.*AM_PROG_CC_C_O' stderr
+grep 'foo--bar' stderr
 grep 'requires.*AM_PROG_AR' stderr
 
 # Disabling extra-portability leaves portability intact (1).
 AUTOMAKE_fails -Wportability -Wno-extra-portability
-grep 'requires.*AM_PROG_CC_C_O' stderr
+grep 'foo--bar' stderr
 grep 'requires.*AM_PROG_AR' stderr && exit 1
 # Disabling extra-portability leaves portability intact (2).
 AUTOMAKE_fails -Wall -Wno-extra-portability
-grep 'requires.*AM_PROG_CC_C_O' stderr
+grep 'foo--bar' stderr
 grep 'requires.*AM_PROG_AR' stderr && exit 1
 
 # Enabling portability does not enable extra-portability.
 AUTOMAKE_fails -Wportability
-grep 'requires.*AM_PROG_CC_C_O' stderr
+grep 'foo--bar' stderr
 grep 'requires.*AM_PROG_AR' stderr && exit 1
 
 # Disabling portability disables extra-portability.

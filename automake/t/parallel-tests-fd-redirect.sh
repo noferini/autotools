@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,11 +16,11 @@
 
 # parallel-tests support: redirection of file descriptors with
 # AM_TESTS_FD_REDIRECT, even when using tests without suffix.
-# The sister 'parallel-tests-fd-redirect-exeext.test' do a similar
+# The sister 'parallel-tests-fd-redirect-exeext.sh' do a similar
 # check for tests that are binary executables.
-# See also the more generic test 'check-fd-redirect.test'.
+# See also the more generic test 'check-fd-redirect.sh'.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_OUTPUT
@@ -57,11 +57,10 @@ grep '^bar\.log:.*bar' Makefile || st=1
 grep '^foo\.log:' Makefile && st=1
 test $st -eq 0 || fatal_ "doesn't cover expected code paths"
 
-st=0; $MAKE check >stdout || st=1
-cat stdout
+run_make -O -e IGNORE check
 cat foo.log
 cat bar.log
-test $st -eq 0
+test $am_make_rc -eq 0
 grep "^ foofoofoo$" stdout
 grep "^ barbarbar$" stdout
 $EGREP '(foofoofoo|barbarbar)' *.log && exit 1

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (C) 2004-2012 Free Software Foundation, Inc.
+# Copyright (C) 2004-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # Check conditional local rules.
 # Report from Simon Josefsson.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >>configure.ac <<'EOF'
 AM_CONDITIONAL([CASE_A], [test -n "$case_A"])
@@ -39,19 +39,15 @@ $AUTOCONF
 $AUTOMAKE
 
 ./configure
-$MAKE check >stdout || { cat stdout; exit 1; }
-cat stdout
+run_make -O check
 grep GrepMe1 stdout && exit 1
-$MAKE install >stdout || { cat stdout; exit 1; }
-cat stdout
+run_make -O install
 grep GrepMe2 stdout
 
 ./configure case_A=1
-$MAKE check >stdout || { cat stdout; exit 1; }
-cat stdout
+run_make -O check
 grep GrepMe1 stdout
-$MAKE install >stdout || { cat stdout; exit 1; }
-cat stdout
+run_make -O install
 grep GrepMe2 stdout && exit 1
 
 :

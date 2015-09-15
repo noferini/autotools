@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2012 Free Software Foundation, Inc.
+# Copyright (C) 2012-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 # declaration.
 
 required=python
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac <<'EOF'
 AM_PATH_PYTHON
@@ -46,10 +46,10 @@ test -f py-compile
 
 ./configure --prefix="$(pwd)/inst"
 $MAKE install
-test -f inst/py/yes.py
-test -f inst/py/yes.pyc
-test ! -e inst/py/no.py
-test ! -e inst/py/no.pyc
+test -f            inst/py/yes.py
+test ! -e          inst/py/no.py
+py_installed       inst/py/yes.pyc
+py_installed --not inst/py/no.pyc
 
 $MAKE disttest
 

@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 1998-2012 Free Software Foundation, Inc.
+# Copyright (C) 1998-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 # Make sure README-alpha is distributed when appropriate.  Report from
 # Jim Meyering.
-. ./defs || exit 1
+. test-init.sh
 
 cat > configure.ac << 'END'
 AC_INIT([alpha], [1.0a])
@@ -60,11 +60,12 @@ $AUTOMAKE
 ./configure
 
 # "make distdir" should fail because NEWS does not mention 1.0a
-$MAKE check 2>stderr && { cat stderr >&2; exit 1; }
-cat stderr >&2
+run_make -E -e FAIL check
 grep 'NEWS not updated' stderr
 test ! -e works
 
 echo 'alpha 1.0a released' > NEWS
 $MAKE check
 test -f works
+
+:

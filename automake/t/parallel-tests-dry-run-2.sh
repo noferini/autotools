@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,10 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# Check parallel-tests interactions with "make -n".
-# See also sister test 'parallel-tests-dry-run-1.test'.
+# Check interactions between the parallel test harness and "make -n".
+# See also sister test 'parallel-tests-dry-run-1.sh'.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_OUTPUT
@@ -37,8 +37,7 @@ $AUTOCONF
 make_n_ ()
 {
   st=0
-  $MAKE -n "$@" >output 2>&1 || { cat output; ls -l; exit 1; }
-  cat output
+  run_make -M -- -n "$@" || { ls -l; exit 1; }
   # Look out for possible errors from common tools used by recipes.
   $EGREP -i ' (exist|permission|denied|no .*(such|file))' output && exit 1
   $EGREP '(mv|cp|rm|cat|grep|sed|awk): ' output && exit 1

@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,9 +17,9 @@
 # TAP support:
 #  - non-success exit status of a test script is reported in the
 #    log file
-# See also related test 'tap-passthrough.test'.
+# See also related test 'tap-passthrough.sh'.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat > Makefile.am << 'END'
 TEST_LOG_COMPILER = $(SHELL)
@@ -38,7 +38,7 @@ END
   echo TESTS += exit-$e.test >> Makefile.am
 done
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
 st=0
 $MAKE check || st=$?
@@ -52,7 +52,7 @@ for e in $exit_statuses; do
   done
 done
 
-env TEST_LOG_DRIVER_FLAGS='--ignore-exit' $MAKE -e check
+run_make check TEST_LOG_DRIVER_FLAGS='--ignore-exit'
 $FGREP ".test - exited with status" *.log && exit 1
 
 :

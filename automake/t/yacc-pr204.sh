@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2002-2012 Free Software Foundation, Inc.
+# Copyright (C) 2002-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,12 +16,12 @@
 
 # For PR 204.
 # C sources derived from nodist_ yacc sources should not be distributed.
-# See also related test 'yacc-nodist.test'.
-# The tests 'lex-nodist.test' and 'lex-pr204.test' does similar checks
+# See also related test 'yacc-nodist.sh'.
+# The tests 'lex-nodist.sh' and 'lex-pr204.sh' does similar checks
 # for lex-generated C files.
 
 required='cc yacc'
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac <<'EOF'
 AM_MAINTAINER_MODE

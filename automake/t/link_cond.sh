@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2012 Free Software Foundation, Inc.
+# Copyright (C) 2012-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 # See automake bug#11089.
 
 required='cc c++'
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CC
@@ -60,11 +60,11 @@ main ()
 END
 
 ./configure have_cxx=no
-CXX=false $MAKE -e
+run_make CXX=false
 
 # Sanity check.
 rm -f foo foo.exe
-CC=false $MAKE -e && exit 99
+run_make CC=false && fatal_ '"make CC=false" succeeded unexpectedly'
 
 $MAKE distclean
 
@@ -79,10 +79,10 @@ int main (void)
 END
 
 ./configure have_cxx=yes
-CC=false $MAKE -e
+run_make CC=false
 
 # Sanity check.
 rm -f foo foo.exe
-CXX=false $MAKE -e && exit 99
+run_make CXX=false && fatal_ '"make CXX=false" succeeded unexpectedly'
 
 :

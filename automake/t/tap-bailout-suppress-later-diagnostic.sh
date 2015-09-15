@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,9 +18,9 @@
 #  - A "Bail out!" directive causes the driver to ignore any TAP
 #    diagnostic message in the rest of the following TAP stream.
 
-. ./defs || exit 1
+. test-init.sh
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
 echo AM_TEST_LOG_DRIVER_FLAGS = --comments >> Makefile
 
@@ -32,11 +32,7 @@ Bail out!
 # not seen
 END
 
-# Doing the sums above, we have:
-
-$MAKE check >stdout && { cat stdout; exit 1; }
-cat stdout
-
+run_make -O -e FAIL check
 count_test_results total=2 pass=1 fail=0 xpass=0 xfail=0 skip=0 error=1
 grep '# all.test: sanity check' stdout
 grep 'not seen' stdout && exit 1

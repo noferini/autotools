@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 # using DESTDIR to build simple, no-frills binary packages.
 
 am_create_testdir=empty
-. ./defs || exit 1
+. test-init.sh
 
 cp "$am_docdir"/amhello-1.0.tar.gz . \
   || fatal_ "cannot get amhello tarball"
@@ -44,8 +44,8 @@ if tar --version </dev/null | grep GNU; then
 END
 else
   : Be laxer with other tar implementations, to avoid spurious failures.
-  $EGREP '(^| )\./usr/bin/hello'$EXEEXT'( |$)' tar.got
-  $EGREP '(^| )\./usr/share/doc/amhello/README( |$)' tar.got
+  $EGREP '(^| )(\./)?usr/bin/hello'$EXEEXT'( |$)' tar.got
+  $EGREP '(^| )(\./)?usr/share/doc/amhello/README( |$)' tar.got
 fi
 
 :

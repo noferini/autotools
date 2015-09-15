@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2003-2012 Free Software Foundation, Inc.
+# Copyright (C) 2003-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,13 +15,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Test to make sure that adding a new directory works, even from
-# subdirectories.  The sister test 'subdir5.test' makes sure it works
-# when make is run from the top-level directory.
+# subdirectories.  The sister test 'subdir-add-pr46.sh' makes sure
+# it works when make is run from the top-level directory.
 # PR automake/46
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
+AC_CONFIG_MACRO_DIR([m4])
 m4_include([confiles.m4])
 MORE_DEFS
 AC_OUTPUT
@@ -31,7 +32,6 @@ echo 'AC_CONFIG_FILES([sub/Makefile])' > confiles.m4
 
 cat > Makefile.am << 'END'
 SUBDIRS = sub
-ACLOCAL_AMFLAGS = -I m4
 END
 
 mkdir sub
@@ -41,7 +41,7 @@ mkdir sub
 mkdir m4
 echo 'AC_DEFUN([MORE_DEFS], [])' > m4/moredefs.m4
 
-$ACLOCAL -I m4
+$ACLOCAL
 $AUTOCONF
 $AUTOMAKE
 ./configure
@@ -49,10 +49,10 @@ $MAKE
 
 # Now add new directories.
 
-# The first step users typically do when adding a new subdir is
-# editing configure.ac.  That is already tested by subdir5.test,
-# though, so here we try to just edit a file that is included by
-# configure.ac, without touching configure.ac itself.
+# The first step users typically do when adding a new subdir is editing
+# configure.ac.  That is already tested by 'subdir-add-pr46.sh' though,
+# so here we try to just edit a file that is included by configure.ac,
+# without touching configure.ac itself.
 
 mkdir sub/maude
 cat > sub/maude/Makefile.am << 'END'
@@ -66,10 +66,10 @@ echo 'SUBDIRS = maude' >> sub/Makefile.am
 mkdir maude
 : > maude/Makefile.am
 
-# Update confiles.m4 *after* updating sub/Makefile.am; subdir5.test do
-# it in the other way: it updates configure.ac before Makefile.am.
-# We sleep here because modified configure dependencies must be newer
-# than config.status.
+# Update confiles.m4 *after* updating sub/Makefile.am; the sister test
+# 'subdir-add-pr46.sh' does it the in other way: it updates configure.ac
+# before Makefile.am.  We sleep here because modified configure
+# dependencies must be newer than config.status.
 $sleep
 echo 'AC_CONFIG_FILES([maude/Makefile sub/maude/Makefile])' >> confiles.m4
 

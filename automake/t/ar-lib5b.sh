@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,9 +16,9 @@
 
 # Test if AM_PROG_AR triggers the use of the ar-lib script.
 # This test does not require Microsoft lib.
-# Keep this test in sync with sister test 'ar-lib5a.test'.
+# Keep this test in sync with sister test 'ar-lib5a.sh'.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat > configure.ac << END
 AC_INIT([$me], [1.0])

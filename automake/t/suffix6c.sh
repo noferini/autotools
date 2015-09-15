@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2001-2012 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,9 +15,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Test to make sure that '.o' and '.obj' are handled like '.$(OBJEXT)'.
-# See also related "grepping" test suffix6.test.
+# See also related "grepping" test 'suffix6.sh'.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 # $(LINK) is not defined automatically by Automake, since the *_SOURCES
@@ -31,7 +31,7 @@ AC_SUBST([OBJEXT])
 AC_OUTPUT
 END
 
-unset OBJEXT || :
+unset OBJEXT
 
 cat > Makefile.am << 'END'
 SUFFIXES = .zoo .o .obj .@OBJEXT@
@@ -70,7 +70,7 @@ cat > foo.exp <<'END'
 %TWO%
 END
 echo %TWO% > foo.zoo
-OBJEXT=o $MAKE -e
+run_make OBJEXT=o
 cat foo.o
 cat foo.XxX
 diff foo.XxX foo.exp
@@ -82,7 +82,7 @@ cat > foo.exp <<'END'
 %THREE%
 END
 echo %THREE% > foo.zoo
-OBJEXT=obj $MAKE -e
+run_make OBJEXT=obj
 cat foo.obj
 cat foo.XxX
 diff foo.XxX foo.exp

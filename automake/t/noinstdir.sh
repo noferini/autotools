@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2001-2012 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,8 @@
 # Test to make sure that noinst_* and check_* are not installed.
 # From Pavel Roskin.
 
-. ./defs || exit 1
+required=cc
+. test-init.sh
 
 cat > Makefile.am << 'END'
 noinst_SCRIPTS = foo.sh
@@ -36,6 +37,7 @@ cat >> configure.ac << 'END'
 AC_PROG_CC
 AM_PROG_AR
 AC_PROG_RANLIB
+AC_OUTPUT
 END
 
 : > ar-lib
@@ -43,7 +45,26 @@ END
 $ACLOCAL
 $AUTOMAKE
 
-grep 'noinstdir' Makefile.in && exit 1
-grep 'checkdir' Makefile.in && exit 1
+$EGREP '(noinst|check)dir' Makefile.in && exit 1
+
+$AUTOCONF
+./configure --prefix="$(pwd)/inst"
+
+echo 'int main (void) { return 0; }' > foo.c
+echo 'int main (void) { return 0; }' > bar.c
+
+echo 'int foo (void) { return 0; }' > libfoo.c
+echo 'int bar (void) { return 0; }' > libbar.c
+
+: > foo.sh
+: > foo.xpm
+: > foo.h
+: > bar.sh
+: > bar.xpm
+: > bar.h
+
+$MAKE
+$MAKE install
+test ! -e inst
 
 :

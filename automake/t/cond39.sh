@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (C) 2008-2012 Free Software Foundation, Inc.
+# Copyright (C) 2008-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # Build either as CONFIG_FILE or as PROGRAM.
 
 required=cc
-. ./defs || exit 1
+. test-init.sh
 
 mkdir sub
 
@@ -78,8 +78,7 @@ $AUTOCONF
 $AUTOMAKE --add-missing
 
 ./configure COND=true
-$MAKE 2>stderr || { cat stderr >&2; exit 1; }
-cat stderr >&2
+run_make -E
 grep 'overriding commands' stderr && exit 1
 $MAKE sure-exist
 ./prog1 && exit 1
@@ -93,8 +92,7 @@ $MAKE sure-exist
 $MAKE distclean
 
 ./configure COND=false
-$MAKE 2>stderr || { cat stderr >&2; exit 1; }
-cat stderr >&2
+run_make -E
 grep 'overriding commands' stderr && exit 1
 ./prog1
 ./sub/prog2

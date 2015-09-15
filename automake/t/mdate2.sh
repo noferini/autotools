@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 1996-2012 Free Software Foundation, Inc.
+# Copyright (C) 1996-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 # Test to make sure mdate-sh is included in distribution.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat > Makefile.am << 'END'
 info_TEXINFOS = textutils.texi
@@ -29,7 +29,7 @@ END
 # Required when using Texinfo.
 : > texinfo.tex
 : > mdate-sh
-echo '@setfilename textutils' > textutils.texi
+echo '@setfilename textutils.info' > textutils.texi
 
 # Use "././" to confuse Automake into thinking this is a subdir build.
 $ACLOCAL

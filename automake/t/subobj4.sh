@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2001-2012 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,11 +17,10 @@
 # Make sure '../foo/foo.cpp' generates a rule.
 # Report from Dave Brolley.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CC
-AM_PROG_CC_C_O
 AC_PROG_CXX
 AC_CONFIG_FILES([d1/Makefile d2/Makefile])
 AC_OUTPUT
@@ -41,11 +40,10 @@ END
 cat > d2/Makefile.am << 'END'
 END
 
-: > compile
 : > d2/z.c
 
 $ACLOCAL
-$AUTOMAKE
+$AUTOMAKE -Wno-unsupported
 
 grep '\$(CC) .*\.\./d2/z\.c' d1/Makefile.in
 

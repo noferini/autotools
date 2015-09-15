@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2008-2012 Free Software Foundation, Inc.
+# Copyright (C) 2008-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 #    installation of aux files should be race-free.
 
 required=perl-threads
-. ./defs || exit 1
+. test-init.sh
 
 cat > configure.ac << 'END'
 AC_INIT([parallel-am], [1.0])
@@ -56,7 +56,7 @@ mkdir build-aux
 $ACLOCAL
 
 # Generate expected output using the non-threaded code.
-unset AUTOMAKE_JOBS || :
+unset AUTOMAKE_JOBS
 AUTOMAKE_run --add-missing
 mv stderr expected
 mv Makefile.in Makefile.in.exp

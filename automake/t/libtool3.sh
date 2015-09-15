@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2002-2012 Free Software Foundation, Inc.
+# Copyright (C) 2002-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 # Also make sure we do not bloat the Makefile with unneeded rules.
 
 required='cc libtoolize'
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CC
@@ -28,6 +28,10 @@ AC_OUTPUT
 END
 
 cat > Makefile.am << 'END'
+# FIXME: stop disabling the warnings in the 'unsupported' category
+# FIXME: once the 'subdir-objects' option has been mandatory.
+AUTOMAKE_OPTIONS = -Wno-unsupported
+
 lib_LTLIBRARIES = lib0.la liba/liba.la
 lib0_la_SOURCES = 0.c
 liba_liba_la_SOURCES = liba/a.c
@@ -66,7 +70,7 @@ a (void)
 END
 
 # Use --copy to workaround a bug in Cygwin's 'cp -p' during distcheck.
-# (This bug is already exhibited by subobj9.test.)  In brief: Cygwin's
+# (This bug is already exhibited by subobj9.sh.)  In brief: Cygwin's
 # 'cp -p' tries to preserve group and owner of the source and fails
 # to do so under normal accounts.  With --copy we ensure we own all files.
 

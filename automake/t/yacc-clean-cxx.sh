@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@
 # Yacc sources are cleaned by "make clean", while C++ source and
 # header files derived from distributed Yacc sources are cleaned by
 # "make maintainer-clean".
-# See also sister test 'yacc-clean.test'.
+# See also sister test 'yacc-clean.sh'.
 
 required='c++ yacc'
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CXX

@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,9 +18,9 @@
 #  - interactions between "TAP plan with SKIP" and logging of earlier or
 #    later TAP or non-TAP text
 
-. ./defs || exit 1
+. test-init.sh
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
 echo TEST_LOG_DRIVER_FLAGS = --comments >> Makefile
 
@@ -45,10 +45,7 @@ an early non-TAP line
 a later non-TAP line
 END
 
-TESTS='foo.test foo2.test bar.test' $MAKE -e check >stdout \
-  || { cat stdout; exit 1; }
-cat stdout
-
+run_make -O TESTS='foo.test foo2.test bar.test' check
 count_test_results total=3 pass=0 fail=0 xpass=0 xfail=0 skip=3 error=0
 
 grep '^# foo\.test: a comment$' stdout

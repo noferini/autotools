@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,9 +20,9 @@
 #  - test results without number get automatically numbered in the
 #    console progress output
 
-. ./defs || exit 1
+. test-init.sh
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
 cat > all.test <<'END'
 1..14
@@ -44,8 +44,7 @@ not ok
 ok
 END
 
-TESTS=all.test $MAKE -e check >stdout && { cat stdout; exit 1; }
-cat stdout
+run_make -O -e FAIL TESTS=all.test check
 count_test_results total=14 pass=6 fail=5 xpass=1 xfail=1 skip=1 error=0
 
 cat > exp <<'END'

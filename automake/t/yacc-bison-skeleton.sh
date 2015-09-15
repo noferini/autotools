@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,10 +18,11 @@
 # For Automake bug#7648 and PR automake/491.
 
 required='cc bison'
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CC
+AC_C_INLINE    dnl Required by some pre-C99 compilers such as MSVC.
 AC_PROG_YACC
 AC_OUTPUT
 END
@@ -30,16 +31,20 @@ cat > Makefile.am << 'END'
 bin_PROGRAMS = zardoz
 zardoz_SOURCES = zardoz.y foo.c
 AM_YFLAGS = -d --skeleton glr.c
+BUILT_SOURCES = zardoz.h
 END
 
 # Parser.
 cat > zardoz.y << 'END'
 %{
-int yylex () { return 0; }
-void yyerror (const char *s) { return; }
+int yylex ();
+void yyerror (const char *s);
 %}
 %%
 foobar : 'f' 'o' 'o' 'b' 'a' 'r' {};
+%%
+int yylex () { return 0; }
+void yyerror (const char *s) { return; }
 END
 
 cat > foo.c << 'END'
@@ -67,6 +72,6 @@ $MAKE
 
 # Check that distribution is self-contained, and do not require
 # bison to be built.
-env YACC=false DISTCHECK_CONFIGURE_FLAGS='YACC=false' $MAKE -e distcheck
+yl_distcheck YACC=false DISTCHECK_CONFIGURE_FLAGS='YACC=false'
 
 :

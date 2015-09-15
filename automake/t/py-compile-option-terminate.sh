@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 # explicitly terminate the option list for 'py-compile'.
 
 required=python
-. ./defs || exit 1
+. test-init.sh
 
 cp "$am_scriptdir/py-compile" . \
   || fatal_ "failed to fetch auxiliary script py-compile"
@@ -26,18 +26,18 @@ cp "$am_scriptdir/py-compile" . \
 : > ./-o.py
 : > ./--foo.py
 ./py-compile -- -o.py --foo.py
-test -f ./-o.pyc
-test -f ./-o.pyo
-test -f ./--foo.pyc
-test -f ./--foo.pyo
+py_installed ./-o.pyc
+py_installed ./-o.pyo
+py_installed ./--foo.pyc
+py_installed ./--foo.pyo
 rm -f ./-*.py[co]
 : > x.py
 ./py-compile x.py -o.py --foo.py
-test -f ./x.pyc
-test -f ./x.pyo
-test -f ./-o.pyc
-test -f ./-o.pyo
-test -f ./--foo.pyc
-test -f ./--foo.pyo
+py_installed ./x.pyc
+py_installed ./x.pyo
+py_installed ./-o.pyc
+py_installed ./-o.pyo
+py_installed ./--foo.pyc
+py_installed ./--foo.pyo
 
 :

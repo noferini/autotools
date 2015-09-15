@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2009-2012 Free Software Foundation, Inc.
+# Copyright (C) 2009-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # Check that ':test-results:' directives in test scripts' output doesn't
 # originate spurious results in the testsuite summary.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_OUTPUT
@@ -49,13 +49,11 @@ $AUTOMAKE -a
 
 ./configure
 
-st=0
-$MAKE check >stdout || st=$?
-cat stdout
+run_make -O -e IGNORE check
 cat test-suite.log
 cat foo.log
 cat bar.log
-test $st -eq 0 || exit $st
+test $am_make_rc -eq 0
 
 grep '^:test-result:XFAIL$'  foo.log
 grep '^:test-result: SKIP$'  foo.log

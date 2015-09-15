@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2012 Free Software Foundation, Inc.
+# Copyright (C) 2012-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,31 +16,35 @@
 
 # Test and that vapi files are correctly handled by Vala support.
 
-required='valac cc GNUmake'
-. ./defs || exit 1
+required='pkg-config valac cc GNUmake'
+. test-init.sh
 
 cat >> configure.ac <<'END'
 AC_PROG_CC
-AM_PROG_CC_C_O
 AM_PROG_VALAC([0.7.3])
+PKG_CHECK_MODULES([GOBJECT], [gobject-2.0 >= 2.4])
 AC_OUTPUT
 END
 
 cat > Makefile.am <<'END'
 bin_PROGRAMS = zardoz
-AM_VALAFLAGS = --profile=posix
+AM_CFLAGS = $(GOBJECT_CFLAGS)
+LDADD = $(GOBJECT_LIBS)
 zardoz_SOURCES = zardoz.vala foo.vapi foo.h
 END
 
 cat > zardoz.vala <<'END'
-int main ()
-{
+using GLib;
+public class Zardoz {
+  public static void main () {
     stdout.printf (BARBAR);
-    return 0;
+  }
 }
 END
 
-echo '#define BARBAR "Zardoz!\n"' > foo.h
+# Use printf, not echo, to avoid '\n' being considered and escape
+# sequence and printed as a newline in 'foo.h'.
+printf '%s\n' '#define BARBAR "Zardoz!\n"' > foo.h
 
 cat > foo.vapi <<'END'
 [CCode (cprefix="", lower_case_cprefix="", cheader_filename="foo.h")]
@@ -74,7 +78,9 @@ cross_compiling || $MAKE test1 || exit 1
 
 # Simple check on remake rules.
 $sleep
-echo '#define BAZBAZ "Quux!\n"' > foo.h
+# Use printf, not echo, to avoid '\n' being considered and escape
+# sequence and printed as a newline in 'foo.h'.
+printf '%s\n' '#define BAZBAZ "Quux!\n"' > foo.h
 sed 's/BARBAR/BAZBAZ/' zardoz.vala > t && mv -f t zardoz.vala || exit 99
 $MAKE && exit 1
 sed 's/BARBAR/BAZBAZ/' foo.vapi > t && mv -f t foo.vapi || exit 99
