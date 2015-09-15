@@ -1,12 +1,10 @@
 ## Replacement for AC_PROG_LEX.                            -*-  Autoconf -*-
 ## by Alexandre Oliva <oliva@dcc.unicamp.br>
-# Copyright (C) 1998-2012 Free Software Foundation, Inc.
+# Copyright (C) 1998-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
-
-# serial 6
 
 # AM_PROG_LEX
 # -----------

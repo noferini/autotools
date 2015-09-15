@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # Check that we can use indirections when overriding TESTS and
 # TEST_LOGS from the command line.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_OUTPUT
@@ -60,8 +60,7 @@ END
 
 do_check ()
 {
-  env "$@" $MAKE -e check >stdout || { cat stdout; exit 1; }
-  cat stdout
+  run_make -O -- "$@" check
   grep '^PASS:' stdout | LC_ALL=C sort > got-out
   cat got-out
   ls . | grep '\.log$' | LC_ALL=C sort > got-log

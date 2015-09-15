@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2002-2012 Free Software Foundation, Inc.
+# Copyright (C) 2002-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,11 +17,10 @@
 # The true/false example from the manual, plus a check for _SHORTNAME.
 
 required='cc native'
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CC
-AM_PROG_CC_C_O
 AC_OUTPUT
 END
 

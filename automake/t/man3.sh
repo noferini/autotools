@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2008-2012 Free Software Foundation, Inc.
+# Copyright (C) 2008-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 # PR 516: Prefer generated manpages to distributed ones.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat > Makefile.am << 'END'
 dist_man_MANS = foo.1
@@ -39,6 +39,6 @@ $ACLOCAL
 $AUTOMAKE
 $AUTOCONF
 ./configure
-DISTCHECK_CONFIGURE_FLAGS=foo=bar $MAKE -e distcheck
+run_make DISTCHECK_CONFIGURE_FLAGS='foo=bar' distcheck
 
 :

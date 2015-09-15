@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,10 +15,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Test AM_PROG_AR ordering requirements
-# Keep this test in sync with sister test 'ar-lib6b.test'.
+# Keep this test in sync with sister test 'ar-lib6b.sh'.
 
 required=libtoolize
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CC

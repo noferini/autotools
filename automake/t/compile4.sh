@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2010-2012 Free Software Foundation, Inc.
+# Copyright (C) 2010-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 # with respect to absolute paths.
 
 required='cl'
-. ./defs || exit 1
+. test-init.sh
 
 get_shell_script compile
 
@@ -46,7 +46,6 @@ absmainobj=$cwd/main.obj
 
 cat >> configure.ac << 'END'
 AC_PROG_CC
-AM_PROG_CC_C_O
 AM_PROG_AR
 AC_PROG_RANLIB
 AC_CONFIG_FILES([sub/Makefile])
@@ -69,14 +68,6 @@ $AUTOMAKE -a
 $MAKE
 
 ./compile cl $CPPFLAGS $CFLAGS -c -o "$absmainobj" "$absmainc"
-
-# cl expects archives to be named foo.lib, not libfoo.a so
-# make a simple copy here if needed. This is a severe case
-# of badness, but ignore that since this is not what is
-# being tested here...
-if test -f sub/libfoo.a; then
-  cp sub/libfoo.a sub/foo.lib
-fi
 
 # POSIX mandates that the compiler accepts a space between the -I,
 # -l and -L options and their respective arguments.  Traditionally,

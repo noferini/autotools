@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 # tests for other primaries too?  E.g., SCRIPTS, PROGRAMS, LISP, PYTHON,
 # etc...
 
-. ./defs || exit 1
+. test-init.sh
 
 mkdir d
 : > d/f
@@ -28,9 +28,14 @@ chmod a-w d || skip "cannot make directories unwritable"
 
 # On Solaris 10, if '/bin/rm' is run with the '-f' option, it doesn't
 # print any error message when failing to remove a file (due to e.g.,
-# "Permission denied").  Yikes.  We'll cater to this incompatibility
-# by relaxing a test below if a faulty 'rm' is detected.
-st=0; rm -f d/f 2>stderr || st=$?
+# "Permission denied").  And it gets weirder.  On OpenIndiana 11, the
+# /bin/sh shell (in many respects a decent POSIX shell) seems to somehow
+# "eat" the error message from 'rm' in some situation, although the 'rm'
+# utility itself correctly prints it when invoked from (say) 'env' or
+# 'bash'.  Yikes.
+# We'll cater to these incompatibilities by relaxing a test below if
+# a faulty shell or 'rm' program is detected.
+st=0; $SHELL -c 'rm -f d/f' 2>stderr || st=$?
 cat stderr >&2
 test $st -gt 0 || skip_ "can delete files from unwritable directories"
 if grep 'rm:' stderr; then
@@ -53,7 +58,8 @@ $ACLOCAL
 $AUTOMAKE
 $AUTOCONF
 
-# Make it harder to experience false postives when grepping error messages.
+# Weird name, to make it harder to experience false positives when
+# grepping error messages.
 inst=__inst-dir__
 
 ./configure --prefix="$(pwd)/$inst"
@@ -62,8 +68,7 @@ mkdir $inst $inst/share
 : > $inst/share/foobar.txt
 
 chmod a-w $inst/share
-$MAKE uninstall >output 2>&1 && { cat output; exit 1; }
-cat output
+run_make -M -e FAIL uninstall
 if test $rm_f_is_silent_on_error = yes; then
   : "rm -f" is silent on errors, skip the grepping of make output
 else
@@ -73,9 +78,8 @@ fi
 chmod a-rwx $inst/share
 (cd $inst/share) && skip_ "cannot make directories fully unreadable"
 
-$MAKE uninstall >output 2>&1 && { cat output; exit 1; }
-cat output
-#
+run_make -M -e FAIL uninstall
+
 # Some shells, like Solaris 10 /bin/ksh and /usr/xpg4/bin/sh, do not
 # report the name of the 'cd' builtin upon a chdir error:
 #
@@ -91,7 +95,7 @@ cat output
 #   > \
 #   > cd unreadable'
 #   /bin/ksh[3]: unreadable: permission denied
-#
+
 $EGREP "(cd|sh)(\[[0-9]*[0-9]\])?: .*$inst/share" output
 
 :

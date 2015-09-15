@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,9 +18,9 @@
 # progress output on console.  We keep all of these checks here in a single
 # script so that a potential cosmetic change in the output format won't
 # force us to tweak dozens of other tests (hopefully).
-# See also related test 'tap-todo-skip-whitespace.test'.
+# See also related test 'tap-todo-skip-whitespace.sh'.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat > Makefile.am << 'END'
 TEST_LOG_COMPILER = cat
@@ -144,12 +144,11 @@ END
 
 chmod a+x *.test
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
-# Don't care about exit status or number of test results, they should be
-# checked for in many other tests.
-$MAKE check >stdout || :
-cat stdout
+# We don't care about exit status or number of test results, they
+# should be checked for in many other tests.
+run_make -O -e FAIL check
 
 LC_ALL=C sort exp > t
 mv -f t exp

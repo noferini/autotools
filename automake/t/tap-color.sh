@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 #  - colorization of TAP results and diagnostic messages
 
 required='grep-nonprint'
-. ./defs || exit 1
+. test-init.sh
 
 # Escape '[' for grep, below.
 red="$esc\[0;31m"
@@ -36,7 +36,7 @@ TESTS = all.test skip.test bail.test badplan.test noplan.test \
         few.test many.test order.test afterlate.test
 END
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
 cat > all.test << 'END'
 1..5
@@ -152,14 +152,12 @@ test_no_color ()
 
 # Forced colorization should take place also with non-ANSI terminals;
 # hence the "TERM=dumb" definition.
-TERM=dumb AM_COLOR_TESTS=always $MAKE check >stdout \
-  && { cat stdout; exit 1; }
-cat stdout
+AM_COLOR_TESTS=always; export AM_COLOR_TESTS
+run_make -O -e FAIL TERM=dumb check
 test_color
 
-TERM=ansi $MAKE -e check >stdout \
-  && { cat stdout; exit 1; }
-cat stdout
+unset AM_COLOR_TESTS
+run_make -O -e FAIL TERM=ansi check
 test_no_color
 
 :

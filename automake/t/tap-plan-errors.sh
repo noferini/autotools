@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,21 +19,20 @@
 #  - multiple test plans
 #  - missing test plan
 #  - misplaced test plan (tests run after a late plan)
-# Checks about unplanned tests are performed in 'tap-unplanned.test'
-# and 'tap-skip-whole-badcount.test'.  More checks about corner-cases
-# in TAP plans are performed in 'tap-plan-corner.test'.
+# Checks about unplanned tests are performed in 'tap-unplanned.sh'
+# and 'tap-skip-whole-badcount.sh'.  More checks about corner-cases
+# in TAP plans are performed in 'tap-plan-corner.sh'.
 
-. ./defs || exit 1
+. test-init.sh
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
 my_check ()
 {
   cat > all.test
   test -n "$err" || fatal_ "\$err not set before calling my_check"
   cat all.test # For debugging.
-  $MAKE check >stdout && { cat stdout; exit 1; }
-  cat stdout
+  run_make -O -e FAIL check
   count_test_results "$@"
   grep "^ERROR: all\\.test $err$" stdout
   unset err

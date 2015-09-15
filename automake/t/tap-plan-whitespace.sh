@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,9 +17,9 @@
 # TAP support:
 #  - plan line with trailing whitespace is recognized and handled correctly
 
-. ./defs || exit 1
+. test-init.sh
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
 sed 's/\$$//' > foo.test <<END
 1..2 $
@@ -32,9 +32,7 @@ cat > bar.test <<END
 ok 1
 END
 
-TESTS='foo.test bar.test' $MAKE -e check >stdout || { cat stdout; exit 1; }
-cat stdout
-
+run_make -O TESTS='foo.test bar.test' check
 count_test_results total=3 pass=3 fail=0 error=0 xpass=0 xfail=0 skip=0
 
 :

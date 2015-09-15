@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # Colorized output from the testsuite report shouldn't end up in log files.
 
 required='grep-nonprint'
-. ./defs || exit 1
+. test-init.sh
 
 TERM=ansi; export TERM
 
@@ -27,7 +27,7 @@ END
 
 cat >Makefile.am <<'END'
 LOG_COMPILER = $(SHELL)
-AUTOMAKE_OPTIONS = color-tests parallel-tests
+AUTOMAKE_OPTIONS = color-tests
 TESTS = pass fail skip xpass xfail error
 XFAIL_TESTS = xpass xfail
 END
@@ -45,7 +45,7 @@ $AUTOMAKE --add-missing
 
 ./configure
 mv config.log config-log # Avoid possible false positives below.
-AM_COLOR_TESTS=always $MAKE -e check && exit 1
+run_make -e FAIL AM_COLOR_TESTS=always check
 # Not a useless use of cat; see above comments "grep-nonprinting"
 # requirement in 'test-init.sh'.
 cat *.log | grep "$esc" && exit 1

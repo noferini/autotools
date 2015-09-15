@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,9 +18,9 @@
 #  - the special "plan with SKIP" can also be used "late" in the TAP
 #    stream, i.e., preceded by non-TAP output or TAP diagnostic.
 
-. ./defs || exit 1
+. test-init.sh
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
 cat > foo.test <<END
 some non-TAP text, will be copied in the global log
@@ -32,8 +32,7 @@ cat > bar.test <<END
 1..0
 END
 
-TESTS='foo.test bar.test' $MAKE -e check >stdout || { cat stdout; exit 1; }
-cat stdout
+run_make -O TESTS='foo.test bar.test' check
 
 grep '^SKIP: foo\.test .* from the last line$' stdout
 grep '^SKIP: bar\.test$' stdout

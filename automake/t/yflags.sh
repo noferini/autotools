@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2010-2012 Free Software Foundation, Inc.
+# Copyright (C) 2010-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,10 +16,12 @@
 
 # Check that $(YFLAGS) takes precedence over both $(AM_YFLAGS) and
 # $(foo_YFLAGS).
-# Please keep this in sync with the sister tests yflags2.test, lflags.test
-# and lflags2.test.
+# Please keep this in sync with the sister tests:
+#  - yflags-cxx.sh
+#  - lflags.sh
+#  - lflags-cxx.sh
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >fake-yacc <<'END'
 #!/bin/sh
@@ -27,10 +29,6 @@ echo '/*' "$*" '*/' >y.tab.c
 echo 'extern int dummy;' >> y.tab.c
 END
 chmod a+x fake-yacc
-
-# Remove Yacc from the environment, so that it won't interfere
-# with 'make -e' below.
-unset YACC || :
 
 cat >> configure.ac <<'END'
 AC_SUBST([CC], [false])
@@ -59,7 +57,7 @@ grep '\$(YFLAGS).*\$(AM_YFLAGS)' Makefile.in && exit 1
 
 $AUTOCONF
 ./configure
-env YFLAGS=__user_flags__ $MAKE -e foo.c bar-bar.c
+run_make YFLAGS=__user_flags__ foo.c bar-bar.c
 
 cat foo.c
 cat bar-bar.c

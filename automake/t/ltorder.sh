@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (C) 2008-2012 Free Software Foundation, Inc.
+# Copyright (C) 2008-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # Test for correct installation order of nobase libtool libraries.
 
 required='cc libtoolize'
-. ./defs || exit 1
+. test-init.sh
 
 cat >>configure.ac <<'END'
 AC_PROG_CC
@@ -27,6 +27,7 @@ AC_OUTPUT
 END
 
 cat >Makefile.am <<'END'
+AUTOMAKE_OPTIONS = subdir-objects
 nobase_lib_LTLIBRARIES = liba1.la sub/liba2.la sub/liba3.la liba4.la liba5.la
 sub_liba2_la_LIBADD = liba1.la
 sub_liba3_la_LIBADD = sub/liba2.la
@@ -52,8 +53,7 @@ $AUTOMAKE --add-missing
 ./configure --prefix="$(pwd)/inst"
 
 $MAKE
-$MAKE install 2>stderr || { cat stderr >&2; exit 1; }
-cat stderr >&2
+run_make -E install
 grep 'has not been installed' stderr && exit 1
 
 $MAKE uninstall

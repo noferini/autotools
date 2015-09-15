@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,13 +14,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# Check the testsuite summary with the parallel-tests harness.  This
+# Check the testsuite summary with the parallel test harness.  This
 # script is meant to be sourced by other test script, so that it can
 # be used to check different scenarios (colorized and non-colorized
 # testsuite output, packages with and without bug-report addresses,
 # testsuites in subdirectories, ...)
 
-. ./defs || exit 1
+. test-init.sh
 
 case $use_colors in
   yes)
@@ -28,10 +28,8 @@ case $use_colors in
     # Forced colorization should take place also with non-ANSI
     # terminals; hence this setting.
     TERM=dumb; export TERM
-    am_opts='parallel-tests color-tests'
     ;;
   no)
-    am_opts='parallel-tests'
     ;;
   *)
     fatal_ "invalid use_colors='$use_colors'";;
@@ -39,7 +37,7 @@ esac
 
 cat > configure.ac <<END
 AC_INIT([GNU AutoFoo], [7.1], [bug-automake@gnu.org])
-AM_INIT_AUTOMAKE([$am_opts])
+AM_INIT_AUTOMAKE
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
 END
@@ -71,21 +69,18 @@ do_check ()
   cat > summary.exp
   expect_failure=false
   xfail_tests=''
-  tests="TESTS='$*'"
+  tests="$*"
   for t in $*; do
     case $t in fail*|xpass*|error*) expect_failure=:;; esac
     case $t in xfail*|xpass*) xfail_tests="$xfail_tests $t";; esac
   done
-  test -z "$xfail_tests" || xfail_tests="XFAIL_TESTS='$xfail_tests'"
-  st=0
-  eval "env $tests $xfail_tests \$MAKE -e check > stdout || st=\$?"
-  cat stdout
+  run_make -O -e IGNORE check TESTS="$tests" XFAIL_TESTS="$xfail_tests"
   if $expect_failure; then
-    test $st -gt 0 || exit 1
+    test $am_make_rc -gt 0 || exit 1
   else
-    test $st -eq 0 || exit 1
+    test $am_make_rc -eq 0 || exit 1
   fi
-  $PERL "$am_testauxdir"/extract-testsuite-summary.pl stdout >summary.got \
+  $PERL "$am_testaux_srcdir"/extract-testsuite-summary.pl stdout >summary.got \
    || fatal_ "cannot extract testsuite summary"
   cat summary.exp
   cat summary.got

@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2002-2012 Free Software Foundation, Inc.
+# Copyright (C) 2002-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # Make sure we install built python files.
 
 required=python
-. ./defs || exit 1
+. test-init.sh
 
 cat >>configure.ac <<EOF
 AM_PATH_PYTHON
@@ -40,8 +40,8 @@ mkdir build
 cd build
 ../configure --prefix="$(pwd)/inst"
 $MAKE install
-test -f inst/my/one.py
-test -f inst/my/one.pyc
-test -f inst/my/one.pyo
+py_installed inst/my/one.py
+py_installed inst/my/one.pyc
+py_installed inst/my/one.pyo
 
 :

@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,14 +17,13 @@
 # TAP support:
 #  - how does TAP result numbers with leading zero fares?
 
-. ./defs || exit 1
+. test-init.sh
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
 do_checks ()
 {
-  $MAKE check >stdout && { cat stdout; exit 1; }
-  cat stdout
+  run_make -O -e FAIL check
   count_test_results "$@"
   # Allow some normalization of leading zeros, without forcing it.
   LC_ALL=C sed -n 's/: all\.test 0*\([0-9]\)/: all.test \1/p' stdout > got

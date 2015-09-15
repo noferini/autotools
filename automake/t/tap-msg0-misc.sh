@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,9 +18,9 @@
 #  - literal "0" and "0.0" in a test description and a TODO/SKIP message
 #    at the same time
 
-. ./defs || exit 1
+. test-init.sh
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
 cat > all.test << 'END'
 1..14
@@ -45,9 +45,7 @@ ok 14 0.0 # SKIP 0.0
 
 END
 
-$MAKE check >stdout && { cat stdout; exit 1; }
-cat stdout
-
+run_make -O -e FAIL check
 count_test_results total=14 pass=2 fail=0 xpass=4 xfail=4 skip=4 error=0
 
 sed '/^ *$/d' > exp << 'END'

@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 1997-2012 Free Software Foundation, Inc.
+# Copyright (C) 1997-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,12 +15,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Test to make sure several config headers are allowed.
-# See also sister "semantic" test 'confh8.test'.
+# See also sister "semantic" test 'confh8.sh'.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
-AM_CONFIG_HEADER([config.h two.h])
+AC_CONFIG_HEADERS([config.h two.h])
 END
 
 : > Makefile.am

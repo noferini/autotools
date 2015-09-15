@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2008-2012 Free Software Foundation, Inc.
+# Copyright (C) 2008-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,11 +15,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Check @substituted@ TESTS, some of which are also PROGRAMS.
-# See also sister test 'check-subst.test'.
+# See also sister test 'check-subst.sh'.
 
 # For gen-testsuite-part: ==> try-with-serial-tests <==
 required='cc native'
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CC

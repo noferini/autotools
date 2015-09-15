@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 1998-2012 Free Software Foundation, Inc.
+# Copyright (C) 1998-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,9 +16,9 @@
 
 # Test to make sure rules to invoke all compilers are selected with
 # mixed source objects.
-# (copied from compile_f_c_cxx.test) Mike Nolta <mrnolta@princeton.edu>
+# (copied from compile_f_c_cxx.sh) Mike Nolta <mrnolta@princeton.edu>
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CC

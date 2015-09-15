@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 # erroring out when a still-required file is missing.
 # See also discussion about automake bug#9768.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac <<'END'
 m4_include([foobar.m4])
@@ -39,8 +39,7 @@ $AUTOMAKE
 $MAKE
 
 rm -f zardoz.m4
-$MAKE >output 2>&1 && { cat output; exit 1; }
-cat output
+run_make -e FAIL -M
 # This error will come from aclocal, not make, so we can be stricter
 # in our grepping of it.
 grep ' foobar\.m4:1:.*zardoz\.m4.*does not exist' output
@@ -54,8 +53,7 @@ $AUTOCONF
 ./configure
 $MAKE # Sanity check.
 rm -f foobar.m4
-$MAKE >output 2>&1 && { cat output; exit 1; }
-cat output
+run_make -e FAIL -M
 # This error will come from aclocal, not make, so we can be stricter
 # in our grepping of it.
 grep 'foobar\.m4.*does not exist' output

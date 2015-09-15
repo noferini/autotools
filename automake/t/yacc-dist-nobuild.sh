@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 # See automake bug#7884.
 
 required='cc yacc'
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CC
@@ -83,8 +83,7 @@ chmod a-w $distdir
 mkdir build2
 cd build2
 ../$distdir/configure
-$MAKE >out 2>&1 && { cat out; exit 1; }
-cat out
-$FGREP parse.c out
+run_make -e FAIL -M
+$FGREP parse.c output
 
 :

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (C) 2010-2012 Free Software Foundation, Inc.
+# Copyright (C) 2010-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,16 +15,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Check silent-rules mode for Yacc.
-# Keep this in sync with sister test 'silent-yacc-gcc.test'.
 
 required='cc yacc'
-. ./defs || exit 1
+. test-init.sh
 
 mkdir sub
 
 cat >>configure.ac <<'EOF'
-AM_SILENT_RULES
-AM_PROG_CC_C_O
+AC_PROG_CC
 AC_PROG_YACC
 AC_CONFIG_FILES([sub/Makefile])
 AC_OUTPUT
@@ -72,8 +70,7 @@ $FGREP 'bar2-bar.c' sub/Makefile.in || exit 99
 
 ./configure --enable-silent-rules
 
-$MAKE >stdout || { cat stdout; exit 1; }
-cat stdout
+run_make -O
 
 $EGREP ' (-c|-o)' stdout && exit 1
 $EGREP '(mv|ylwrap) ' stdout && exit 1
@@ -92,8 +89,7 @@ grep 'CCLD .*bar2' stdout
 # different set of rules.
 $MAKE clean
 
-$MAKE >stdout || { cat stdout; exit 1; }
-cat stdout
+run_make -O
 
 $EGREP ' (-c|-o)' stdout && exit 1
 $EGREP '(mv|ylwrap) ' stdout && exit 1
@@ -110,8 +106,7 @@ grep 'CCLD .*bar2' stdout
 $MAKE clean
 rm -f *foo.[ch] sub/*bar.[ch]
 
-$MAKE V=1 >stdout || { cat stdout; exit 1; }
-cat stdout
+run_make -O V=1
 
 grep ' -c ' stdout
 grep ' -o ' stdout
@@ -124,8 +119,7 @@ $EGREP '(YACC|CC|CCLD) ' stdout && exit 1
 # different set of rules.
 $MAKE clean
 
-$MAKE V=1 >stdout || { cat stdout; exit 1; }
-cat stdout
+run_make -O V=1
 
 # Don't look for ylwrap, as probably lex hasn't been re-run.
 grep ' -c ' stdout

@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2001-2012 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,11 +15,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Make sure nobase_* works for libtool libraries and programs as well.
-# This is just the libtool equivalent of nobase.test, split
-# up for greater exposure of nobase.test.
+# This is just the libtool equivalent of 'nobase.sh', split up to allow
+# greater exposure of that test.
 
 required='cc libtoolize'
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac <<'EOF'
 AC_PROG_CC

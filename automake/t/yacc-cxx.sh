@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,10 +16,10 @@
 
 # Basic semantic checks on Yacc + C++ support (when yacc-generated
 # headers are not involved).
-# Keep in sync with sister test 'yacc-basic.test'.
+# Keep in sync with sister test 'yacc-basic.sh'.
 
 required='c++ yacc'
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CXX

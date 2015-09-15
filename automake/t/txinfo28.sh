@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2002-2012 Free Software Foundation, Inc.
+# Copyright (C) 2002-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,12 +15,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Check that info files are built in builddir when needed.
-# Similar to txinfo24.test, but obfuscating filenames with variable
+# Similar to txinfo24.sh, but obfuscating filenames with variable
 # references.
 # Report from Ralf Corsepius.
 
-required='makeinfo tex texi2dvi-o'
-. ./defs || exit 1
+required='makeinfo tex texi2dvi'
+. test-init.sh
 
 # This setting, when honored by GNU ls, used to cause an infinite loop
 # in mdate-sh.
@@ -50,7 +50,7 @@ Hello walls.
 END
 
 $ACLOCAL
-$AUTOMAKE --add-missing
+$AUTOMAKE --add-missing -Wno-error
 $AUTOCONF
 
 mkdir build

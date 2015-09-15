@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2010-2012 Free Software Foundation, Inc.
+# Copyright (C) 2010-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,10 +16,10 @@
 
 # Test that POSIX variable expansion '$(var:str=rpl)' works when used
 # with the LIBRARIES primary in a "simple" way.
-# Keep this in sync with sister test 'posixsubst-ltlibraries.test'.
+# Keep this in sync with sister test 'posixsubst-ltlibraries.sh'.
 
 required=cc
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CC

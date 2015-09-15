@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2010-2012 Free Software Foundation, Inc.
+# Copyright (C) 2010-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,9 +16,9 @@
 
 # Make sure that our private macro 'AM_DEP_TRACK' adds proper text to
 # the configure help screen.
-# Keep this in sync with sister test 'help-depend2.test'
+# Keep this in sync with sister test 'help-depend2.sh'
 
-. ./defs || exit 1
+. test-init.sh
 
 cat > configure.ac <<END
 AC_INIT([$me], [1.0])

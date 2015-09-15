@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2012 Free Software Foundation, Inc.
+# Copyright (C) 2012-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,19 +17,21 @@
 # Vala sources, C and C++ sources and C and C++ headers in the same
 # program.  Functional test.  See automake bug#10894.
 
-required='valac cc c++ GNUmake'
-. ./defs || exit 1
+required='valac cc c++ pkg-config GNUmake'
+. test-init.sh
 
 cat >> configure.ac <<'END'
 AC_PROG_CC
 AC_PROG_CXX
 AM_PROG_VALAC([0.7.3])
+PKG_CHECK_MODULES([GOBJECT], [gobject-2.0 >= 2.4])
 AC_OUTPUT
 END
 
 cat > Makefile.am <<'END'
 bin_PROGRAMS = zardoz
-AM_VALAFLAGS = --profile=posix
+AM_CFLAGS = $(GOBJECT_CFLAGS)
+zardoz_LDADD = $(GOBJECT_LIBS)
 zardoz_SOURCES = zardoz.vala foo.h bar.c baz.c zen.hh master.cxx
 END
 

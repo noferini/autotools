@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 1996-2012 Free Software Foundation, Inc.
+# Copyright (C) 1996-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # Test to make sure compiling Vala code really works with recursive make.
 
 required="pkg-config valac gcc GNUmake"
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CC
@@ -61,8 +61,6 @@ END
 $ACLOCAL
 $AUTOCONF
 $AUTOMAKE -a
-
-grep PKG_CHECK_MODULES configure && skip_ "pkg-config m4 macros not found"
 
 ./configure
 $MAKE

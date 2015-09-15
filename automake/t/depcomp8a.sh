@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2010-2012 Free Software Foundation, Inc.
+# Copyright (C) 2010-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,15 +16,14 @@
 
 # Test for regressions in computation of names of .Po files for
 # automatic dependency tracking.
-# Keep this in sync with sister test 'depcomp8b.test', which checks the
+# Keep this in sync with sister test 'depcomp8b.sh', which checks the
 # same thing for libtool objects.
 
 required=cc
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CC
-#x AM_PROG_CC_C_O
 AC_OUTPUT
 END
 
@@ -37,16 +36,21 @@ mkdir sub
 cat > foo.c << 'END'
 int main (void)
 {
-  extern int bar;
-  return bar;
+  extern int bar (void);
+  return bar ();
 }
 END
 cat > sub/bar.c << 'END'
-extern int bar = 0;
+int bar (void)
+{
+  return 0;
+}
 END
 
 $ACLOCAL
-$AUTOMAKE -a
+# FIXME: stop disabling the warnings in the 'unsupported' category
+# FIXME: once the 'subdir-objects' option has been mandatory.
+$AUTOMAKE -a -Wno-unsupported
 grep include Makefile.in # For debugging.
 grep 'include.*\./\$(DEPDIR)/foo\.P' Makefile.in
 grep 'include.*\./\$(DEPDIR)/bar\.P' Makefile.in
@@ -61,12 +65,9 @@ DISTCHECK_CONFIGURE_FLAGS='--enable-dependency-tracking' $MAKE distcheck
 
 # Try again with subdir-objects option.
 
-sed 's/#x //' configure.ac >configure.int
-mv -f configure.int configure.ac
 echo AUTOMAKE_OPTIONS = subdir-objects >> Makefile.am
 
-$ACLOCAL
-$AUTOMAKE -a
+$AUTOMAKE
 grep include Makefile.in # For debugging.
 grep 'include.*\./\$(DEPDIR)/foo\.P' Makefile.in
 grep 'include.*[^a-zA-Z0-9_/]sub/\$(DEPDIR)/bar\.P' Makefile.in

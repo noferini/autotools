@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 # and do not diagnose valid (albeit more unusual) ones.
 # See automake bug#9400.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac <<'END'
 AC_OUTPUT
@@ -39,7 +39,7 @@ $AUTOMAKE -a
 grep -i 'log' Makefile.in # For debugging.
 
 for lc in $valid_extensions; do
-  uc=$(echo $lc | tr '[a-z]' '[A-Z]')
+  uc=$(echo $lc | tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ)
   $FGREP "\$(${uc}_LOG_COMPILER)" Makefile.in
   grep "^${uc}_LOG_COMPILE =" Makefile.in
   grep "^\.${lc}\.log:" Makefile.in

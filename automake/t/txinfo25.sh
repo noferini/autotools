@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2003-2012 Free Software Foundation, Inc.
+# Copyright (C) 2003-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,11 +17,11 @@
 # Check that info files are built in builddir and in srcdir can safely
 # co-exist.  This setup is obtained by having two info files, only one
 # of which being cleaned.
-# (Similar to txinfo16.test, plus CLEANFILES).
-# (See also txinfo23.test and txinfo24.test).
+# (Similar to txinfo16.sh, plus CLEANFILES).
+# (See also txinfo23.sh and txinfo24.sh).
 
-required='makeinfo tex texi2dvi-o'
-. ./defs || exit 1
+required='makeinfo tex texi2dvi'
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_OUTPUT
@@ -53,8 +53,13 @@ Hello walls.
 END
 
 $ACLOCAL
-$AUTOMAKE --add-missing
 $AUTOCONF
+
+AUTOMAKE_fails --add-missing
+grep "Makefile\.am:.*undocumented.* automake hack" stderr
+grep "Makefile\.am:.*'info-in-builddir' automake option" stderr
+
+$AUTOMAKE --add-missing -Wno-obsolete
 
 mkdir build
 cd build

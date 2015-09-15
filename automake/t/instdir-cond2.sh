@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2012 Free Software Foundation, Inc.
+# Copyright (C) 2012-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@
 # FIXME: this test tries to check that the above also hold for the
 # FIXME: "installdirs" target, but that doesn't currently work :-(
 # FIXME: So this test is still xfailing.
-# See sister test 'instdir-cond.test' for the succeeding part.
+# See sister test 'instdir-cond.sh' for the succeeding part.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AM_CONDITIONAL([ENABLE_FOO], [false])

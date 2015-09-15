@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2003-2012 Free Software Foundation, Inc.
+# Copyright (C) 2003-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,10 +15,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Make sure an AC_CONFIG_FILES can have an AC_CONFIG_FILES output as input.
-# This is comparable to output9.test, but testing Makefile rules.
+# This is comparable to 'output9.sh', but testing Makefile rules.
 # PR/411
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << END
 AC_SUBST([FOO], [top])

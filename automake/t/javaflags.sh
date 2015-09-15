@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,17 +16,13 @@
 
 # Check support for $(JAVACFLAGS) and $(AM_JAVACFLAGS).
 
-. ./defs || exit 1
+. test-init.sh
 
 cat > fake-javac <<'END'
 #!/bin/sh
 echo "$*" > javaflags.list
 END
 chmod a+x fake-javac
-
-# Remove JAVAC from the environment, so that it won't interfere
-# with 'make -e' below.
-unset JAVAC || :
 
 cat >> configure.ac <<'END'
 AC_PROG_CC
@@ -50,7 +46,7 @@ grep '\$(JAVACFLAGS).*\$(AM_JAVACFLAGS)' Makefile.in && exit 1
 
 $AUTOCONF
 ./configure
-env JAVACFLAGS=__user_flags__ $MAKE -e
+run_make JAVACFLAGS=__user_flags__
 
 ls -l
 

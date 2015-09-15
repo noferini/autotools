@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 #  - option '--diagnostic-string' to customize the string introducing
 #    TAP diagnostics
 
-. ./defs || exit 1
+. test-init.sh
 
 fetch_tap_driver
 
@@ -81,13 +81,11 @@ $AUTOMAKE
 
 ./configure
 
-$MAKE check >stdout || { cat stdout; exit 1; }
-cat stdout
+run_make -O check
 count_test_results total=$i pass=$i fail=0 xpass=0 xfail=0 skip=0 error=0
 
 cat later.mk >> Makefile
-$MAKE check >stdout || { cat stdout; exit 1; }
-cat stdout
+run_make -O check
 $FGREP 'blah blah' stdout && exit 1
 
 :

@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2010-2012 Free Software Foundation, Inc.
+# Copyright (C) 2010-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,17 +15,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Backward-compatibility test: try to build and distribute a package
-# using obsoleted forms of AC_INIT, AM_INIT_AUTOMAKE and AC_OUTPUT.
+# using obsoleted forms of AC_INIT, AM_INIT_AUTOMAKE and AC_OUTPUT,
+# and 'configure.in' as autconf input file.
 # This script can also serve as mild stress-testing for Automake.
 # See also the similar test 'backcompat5.test'.
 
 required=cc
 am_create_testdir=empty
-. ./defs || exit 1
+. test-init.sh
 
 # Anyone doing something like this in a real-life package probably
 # deserves to be killed.
-cat > configure.in <<'END'
+cat > configure.ac <<'END'
 dnl: Everything here is *deliberately* underquoted!
 AC_INIT(quux.c)
 PACKAGE=nonesuch-zardoz
@@ -37,7 +38,7 @@ AC_SUBST(two, $two)
 three=3
 AC_SUBST(three)
 AC_PROG_CC
-AC_CONFIG_HEADERS(config.h:config.hin)
+AM_CONFIG_HEADER(config.h:config.hin)
 AM_CONDITIONAL(CROSS_COMPILING, test "$cross_compiling" = yes)
 AC_OUTPUT(Makefile foo.got:foo1.in:foo2.in:foo3.in)
 END
@@ -77,7 +78,7 @@ int main (void)
 }
 END
 
-$ACLOCAL
+$ACLOCAL -Wno-obsolete
 $AUTOMAKE -Wno-obsolete --add-missing
 $AUTOCONF
 
@@ -97,7 +98,7 @@ $MAKE check
 distdir=nonesuch-zardoz-nonesuch-0.1
 $MAKE distdir
 test -f $distdir/quux.c
-test ! -e $distdir/foo.got
+test ! -f $distdir/foo.got
 
 $MAKE distcheck
 

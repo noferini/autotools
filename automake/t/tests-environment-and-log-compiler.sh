@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,13 +18,13 @@
 # by TESTS_ENVIRONMENT and AM_TESTS_ENVIRONMENT in LOG_COMPILER and
 # LOG_FLAGS (for tests both with and without registered extensions).
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_OUTPUT
 END
 
-unset v0 v1 v2 v3 v4 || :
+unset v0 v1 v2 v3 v4
 
 cat > Makefile.am << 'END'
 TESTS_ENVIRONMENT = am__f3 () { echo 3; }; v0='$(srcdir)' v1=1; :;

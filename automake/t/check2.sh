@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2002-2012 Free Software Foundation, Inc.
+# Copyright (C) 2002-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # Test Automake style tests.
 
 # For gen-testsuite-part: ==> try-with-serial-tests <==
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_CONFIG_FILES([dir/Makefile])
@@ -51,13 +51,12 @@ $AUTOCONF
 $AUTOMAKE
 ./configure
 
-$MAKE check >stdout || { cat stdout; exit 1; }
-cat stdout
+run_make -O check
 grep '^PASS: subrun\.sh *$' stdout
 grep 'PASS.*echo\.sh' stdout && exit 1
 
 # 'check' should depend directly on 'check-am' (similar tests are
-# in check.test and check3.test).
+# in 'check.sh' and 'built-sources-check.sh').
 $EGREP '^check:.* check-recursive( |$)' Makefile.in
 $EGREP '^check:.* check-am( |$)' dir/Makefile.in
 

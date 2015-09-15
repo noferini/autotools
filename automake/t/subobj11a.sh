@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2010-2012 Free Software Foundation, Inc.
+# Copyright (C) 2010-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,15 +23,14 @@
 # (even if the file 'foo.mk' exists). The error disappear by collapsing
 # the repeated slash '/' characters into a single one.
 #
-# See also sister "grepping" test 'subobj11b.test', and related test
-# 'subobj11c.test'.
+# See also sister "grepping" test 'subobj11b.sh', and related test
+# 'subobj11c.sh'.
 
 required=cc
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CC
-AM_PROG_CC_C_O
 AC_OUTPUT
 END
 

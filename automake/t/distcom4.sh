@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2003-2012 Free Software Foundation, Inc.
+# Copyright (C) 2003-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,11 +16,10 @@
 
 # Test to make sure config files are distributed, and only once.
 # This tries to distribute a file from a subdirectory, without
-# Makefile in that directory.  distcom5.test performs the same
+# Makefile in that directory.  'distcom5.sh' performs the same
 # test with a Makefile in the directory.
-# Also make sure that README appears first in DIST_COMMON.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
    AC_CONFIG_FILES([tests/autoconf:tests/wrapper.in],
@@ -44,8 +43,13 @@ mkdir tests
 : > README
 : > tests/wrapper.in
 cat > Makefile.am << 'END'
-.PHONY: test
-test: distdir
+.PHONY: test1 test 2
+test1:
+	for x in $(DIST_COMMON); do echo $$x; done \
+	  | grep 'tests/' > lst
+	cat lst # For debugging.
+	test `wc -l <lst` -eq 1
+test2: distdir
 	test -f $(distdir)/tests/wrapper.in
 END
 
@@ -53,25 +57,6 @@ $ACLOCAL
 $AUTOCONF
 $AUTOMAKE --add-missing
 ./configure
-$MAKE test
-
-sed -n -e '/^DIST_COMMON =.*\\$/ {
-   :loop
-   p
-   n
-   t clear
-   :clear
-   s/\\$/\\/
-   t loop
-   p
-   n
-   }' -e '/^DIST_COMMON =/ p' Makefile.in > dc.txt
-
-cat dc.txt # For debugging.
-
-test 1 -eq $(grep -c tests dc.txt)
-grep configure dc.txt
-# README must come first.
-grep 'DIST_COMMON = README' Makefile.in
+$MAKE test1 test2
 
 :

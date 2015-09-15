@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 1998-2012 Free Software Foundation, Inc.
+# Copyright (C) 1998-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 # Yet another multi-":" test, this time from Ken Pizzini.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat > configure.ac <<END
 AC_INIT([$me], [1.0])
@@ -87,8 +87,7 @@ for vpath in : false; do
 
   # version.good should depend on version.gin.
   rm -f version.good
-  $MAKE version.good >output 2>&1 && { cat output; exit 1; }
-  cat output
+  run_make -M -e FAIL version.good
   # Try to verify that we errored out for the right reason.
   $FGREP version.gin output
 

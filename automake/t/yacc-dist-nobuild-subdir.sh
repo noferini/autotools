@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 # Exposes automake bug#8485.
 
 required='cc yacc'
-. ./defs || exit 1
+. test-init.sh
 
 # This test is bounded to fail for any implementation that
 # triggers automake bug#7884.
@@ -27,7 +27,6 @@ useless_vpath_rebuild && skip_ "would trip on automake bug#7884"
 
 cat >> configure.ac << 'END'
 AC_PROG_CC
-AM_PROG_CC_C_O
 AC_PROG_YACC
 AC_OUTPUT
 END

@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # Check against automake bug#9579: distcheck does not always detect
 # incomplete uninstall as advertised.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_OUTPUT
@@ -54,9 +54,7 @@ $MAKE uninstall
 test -f inst/share/dir
 rm -rf inst
 
-$MAKE distcheck >output 2>&1 && { cat output; exit 1; }
-cat output
-
+run_make -M -e FAIL distcheck
 $FGREP 'ERROR: files left after uninstall:' output
 grep '/share/dir *$' output
 
@@ -86,9 +84,7 @@ test -f inst/mu/share/info/dir
 test -f inst/share/info/more/dir
 rm -rf inst
 
-$MAKE distcheck >output 2>&1 && { cat output; exit 1; }
-cat output
-
+run_make -M -e FAIL distcheck
 $FGREP 'ERROR: files left after uninstall:' output
 grep '/mu/share/info/dir *$' output
 grep '/share/info/more/dir *$' output

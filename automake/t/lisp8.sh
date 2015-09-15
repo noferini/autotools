@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2005-2012 Free Software Foundation, Inc.
+# Copyright (C) 2005-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # Check the recover rule of lisp_LISP with parallel make.
 
 required='GNUmake emacs'
-. ./defs || exit 1
+. test-init.sh
 
 cat > Makefile.am << 'EOF'
 dist_lisp_LISP = am-one.el am-two.el am-three.el
@@ -37,29 +37,19 @@ $AUTOCONF
 $AUTOMAKE --add-missing
 ./configure
 
-# Use append mode here to avoid dropping output.  See automake bug#11413.
-: >stdout
-$MAKE -j >>stdout || { cat stdout; exit 1; }
-
-cat stdout
-test 1 -eq $(grep -c 'Warnings can be ignored' stdout)
+run_make -O -- -j
 
 test -f am-one.elc
 test -f am-two.elc
 test -f am-three.elc
-test -f elc-stamp
 
+# Delete ...
 rm -f am-*.elc
 
-# Use append mode here to avoid dropping output.  See automake bug#11413.
-: >stdout
-$MAKE -j >>stdout || { cat stdout; exit 1; }
-
-cat stdout
-test 1 -eq $(grep -c 'Warnings can be ignored' stdout)
+# ... and recover.
+run_make -O -- -j
 test -f am-one.elc
 test -f am-two.elc
 test -f am-three.elc
-test -f elc-stamp
 
 :

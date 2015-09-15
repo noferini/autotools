@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 #  - the '--ignore-exit' option causes the TAP test driver to ignore
 #    exit statuses of the test scripts.
 
-. ./defs || exit 1
+. test-init.sh
 
 echo TESTS = > Makefile.am
 for st in 1 2 77 99; do
@@ -34,10 +34,9 @@ done
 
 chmod a+x *.test
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
-$MAKE check >stdout && { cat stdout; exit 1; }
-cat stdout
+run_make -O -e FAIL check
 count_test_results total=8 pass=4 fail=0 xpass=0 xfail=0 skip=0 error=4
 
 grep '^ERROR: exit1\.test - exited with status 1$' stdout
@@ -46,8 +45,7 @@ grep '^ERROR: exit77\.test - exited with status 77$' stdout
 grep '^ERROR: exit99\.test - exited with status 99$' stdout
 
 echo TEST_LOG_DRIVER_FLAGS = --ignore-exit >> Makefile
-$MAKE check >stdout || { cat stdout; exit 1; }
-cat stdout
+run_make -O check
 count_test_results total=4 pass=4 fail=0 xpass=0 xfail=0 skip=0 error=0
 
 :

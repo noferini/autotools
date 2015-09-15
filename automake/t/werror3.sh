@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2010-2012 Free Software Foundation, Inc.
+# Copyright (C) 2010-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # Make sure a per-Makefile.am -Werror setting is not carried over
 # to another Makefile.am.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >>configure.ac <<\END
 AC_CONFIG_FILES([sub/Makefile])
@@ -36,7 +36,7 @@ END
 $ACLOCAL
 
 # The issue would not manifest with threaded execution.
-unset AUTOMAKE_JOBS || :
+unset AUTOMAKE_JOBS
 AUTOMAKE_run -Wno-error
 grep 'VAR multiply defined' stderr
 

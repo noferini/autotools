@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2010-2012 Free Software Foundation, Inc.
+# Copyright (C) 2010-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,14 +17,11 @@
 # Automatic dependency tracking with subdir-objects option active:
 # check for a pathological case of slash-collapsing in the name of
 # included makefile fragments (containing dependency info).
-# See also related tests 'subobj11a.test' and 'subobj11b.test'.
+# See also related tests 'subobj11a.sh' and 'subobj11b.sh'.
 
-. ./defs || exit 1
+. test-init.sh
 
-cat >> configure.ac << 'END'
-AC_PROG_CC
-AM_PROG_CC_C_O
-END
+echo AC_PROG_CC >> configure.ac
 
 cat > Makefile.am << 'END'
 AUTOMAKE_OPTIONS = subdir-objects

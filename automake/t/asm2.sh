@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2001-2012 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,9 +15,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Test of basic preprocessed assembly functionality.
-# Keep this in sync with sister tests asm.test and asm3.test.
+# Keep this in sync with sister tests 'asm.sh' and 'asm3.sh'.
 
-. ./defs || exit 1
+. test-init.sh
 
 mv configure.ac configure.stub
 

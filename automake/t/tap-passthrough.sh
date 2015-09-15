@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,13 +18,13 @@
 #  - all input (valid TAP lines, invalid TAP lines, non-TAP lines)
 #    are passed through in the log file
 #  - TAP errors are reported in the log file too
-# See also related test 'tap-passthrough-exit.test'.
+# See also related test 'tap-passthrough-exit.sh'.
 
-. ./defs || exit 1
+. test-init.sh
 
 weirdchars=\''"\$@!&()[]<>#;,:.^?*/'
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
 #
 # Only successful tests.
@@ -46,7 +46,7 @@ ok # SKIP who cares?
 $weirdchars
 END
 
-TESTS=ok.test $MAKE -e check || { cat ok.log; exit 1; }
+run_make TESTS=ok.test check || { cat ok.log; exit 1; }
 cat ok.log
 
 for rx in \
@@ -115,8 +115,8 @@ Last line
 END
 
 st=0
-env TESTS='tiny.test ok.test ko.test bail.test skip.test err.test' \
-  $MAKE -e check || st=$?
+run_make check \
+  TESTS='tiny.test ok.test ko.test bail.test skip.test err.test' || st=$?
 cat tiny.log
 cat ok.log
 cat ko.log

@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,9 +18,9 @@
 #  - we shouldn't spuriously recognize as TAP result numbers what it
 #    not, even if it seems pretty close
 
-. ./defs || exit 1
+. test-init.sh
 
-. "$am_testauxdir"/tap-setup.sh || fatal_ "sourcing tap-setup.sh"
+. tap-setup.sh
 
 cat > prefixes <<'END'
 A
@@ -91,9 +91,7 @@ grep '#.*#' all.test \
 test $(wc -l <all.test) -lt $highno \
   || framework_failure_ "creating all.test"
 
-$MAKE check >stdout || :
-cat stdout
-
+run_make -O -e IGNORE check
 count_test_results total=$total pass=$pass fail=$fail skip=$skip \
                    xpass=$xpass xfail=$xfail error=$error
 

@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2009-2012 Free Software Foundation, Inc.
+# Copyright (C) 2009-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
 # If $(infodir) is the empty string, then nothing should be installed there.
 # Likewise for the other install-* targets used for texinfo files.
 
-required='makeinfo-html tex texi2dvi'
-. ./defs || exit 1
+required='makeinfo tex texi2dvi'
+. test-init.sh
 
 dvips --help \
   || skip_ "dvips is missing"
@@ -56,18 +56,7 @@ cd build
 $MAKE all dvi ps pdf html
 ls -l
 
-infodir= htmldir= dvidir= psdir= pdfdir=
-export infodir htmldir dvidir psdir pdfdir
-
-$MAKE -e install install-html install-dvi install-ps install-pdf
-test ! -e "$instdir"
-$MAKE -e install install-html install-dvi install-ps install-pdf \
-         DESTDIR="$destdir"
-test ! -e "$instdir"
-test ! -e "$destdir"
-$MAKE -e uninstall > stdout || { cat stdout; exit 1; }
-cat stdout
-grep 'rm -f' stdout && exit 1
-$MAKE -e uninstall DESTDIR="$destdir"
+nulldirs='infodir= htmldir= dvidir= psdir= pdfdir='
+null_install --texi
 
 :

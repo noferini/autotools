@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2009-2012 Free Software Foundation, Inc.
+# Copyright (C) 2009-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,9 +17,9 @@
 # Check parallel-tests features:
 # - per-extension "test runners" a.k.a. "log compilers" (xxx_LOG_COMPILER
 #   and xxx_LOG_FLAGS), also with AC_SUBST'd stuff.
-# See also related test 'parallel-tests-log-compiler-2.test'.
+# See also related test 'parallel-tests-log-compiler-2.sh'.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_SUBST([acsubst_compiler], [t-compiler])
@@ -111,7 +111,7 @@ test -f bla.log
 test -f bli.suff.log
 test -f sub/test.log
 
-T_LOG_FLAGS=--bad $MAKE -e check && exit 1
+run_make -e FAIL T_LOG_FLAGS=--bad check
 cat test-suite.log
 cat bla.log
 # With the above flag overridden, bla.t should fail ...

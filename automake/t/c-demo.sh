@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2012 Free Software Foundation, Inc.
+# Copyright (C) 2012-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 
 required=cc
 am_create_testdir=empty
-. ./defs || exit 1
+. test-init.sh
 
 cat > configure.ac << 'END'
 AC_INIT([GNU C Demo], [22.3.2], [bug-automake@gnu.org])
@@ -27,7 +27,6 @@ AC_CONFIG_SRCDIR([tests/test.test])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE
 AC_PROG_CC
-AM_PROG_CC_C_O
 AM_PROG_AR
 AC_PROG_RANLIB
 AM_CONDITIONAL([RUN_TESTS], [test x"$run_tests" != x"no"])

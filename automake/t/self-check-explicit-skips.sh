@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 # an early exit due to some command exiting unexpectedly with status 77.
 
 am_create_testdir=no
-. ./defs || exit 1
+. test-init.sh
 
 set +e
 
@@ -31,27 +31,24 @@ run_dummy_test ()
 {
   env $2 $AM_TEST_RUNNER_SHELL -c "
     am_create_testdir=no
-    . ./defs
+   . test-init.sh
     $1
   " dummy.sh
 }
 
-run_dummy_test '(exit 77); exit 77'
+run_dummy_test 'exit 77'
 test $? -eq 77 || exit 1
 
 run_dummy_test 'sh -c "exit 77"' am_explicit_skips=no
 test $? -eq 77 || exit 1
 
-run_dummy_test '(exit 77); exit 77' am_explicit_skips=yes 
+run_dummy_test '$PERL -e "exit 77"; true' am_explicit_skips=yes
 test $? -eq 78 || exit 1
 
-run_dummy_test 'sh -c "exit 77"' am_explicit_skips=y
+run_dummy_test 'sh -c "exit 77"; exit 0' am_explicit_skips=y
 test $? -eq 78 || exit 1
 
-run_dummy_test 'exit 77' am_explicit_skips=yes
-test $? -eq 77 || exit 1
-
-run_dummy_test 'skip_ "foo"' am_explicit_skips=y
+run_dummy_test 'skip_ "foo"; :' am_explicit_skips=y
 test $? -eq 77 || exit 1
 
 :

@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2012 Free Software Foundation, Inc.
+# Copyright (C) 2012-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,11 +18,10 @@
 # And use of vapi files to call C code from Vala.
 
 required="valac cc pkg-config libtoolize GNUmake"
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_PROG_CC
-AM_PROG_CC_C_O
 AM_PROG_AR
 AC_PROG_RANLIB
 AC_PROG_LIBTOOL
@@ -32,11 +31,12 @@ AC_OUTPUT
 END
 
 cat > Makefile.am << 'END'
+AUTOMAKE_OPTIONS = subdir-objects
 lib_LIBRARIES = libmu.a
 lib_LTLIBRARIES = src/libzardoz.la
 libmu_a_SOURCES = mu.vala mu2.c mu.vapi mu2.h
 libmu_a_CPPFLAGS = -DOKOKIMDEFINED=1
-libmu_a_VALAFLAGS = --profile=posix --vapidir=$(srcdir)
+libmu_a_VALAFLAGS = --vapidir=$(srcdir)
 AM_CFLAGS = $(GOBJECT_CFLAGS)
 src_libzardoz_la_LIBADD = $(GOBJECT_LIBS)
 src_libzardoz_la_SOURCES = src/zardoz-foo.vala src/zardoz-bar.vala
@@ -48,8 +48,6 @@ libtoolize
 $ACLOCAL
 $AUTOCONF
 $AUTOMAKE -a
-
-grep PKG_CHECK_MODULES configure && skip_ "pkg-config m4 macros not found"
 
 ./configure
 
@@ -78,7 +76,7 @@ int main ()
 }
 END
 
-mkdir src
+mkdir -p src
 cat > src/zardoz-foo.vala << 'END'
 using GLib;
 public class Foo {

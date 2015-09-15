@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,12 +16,10 @@
 
 # Check test counts in the testsuite summary.
 
-. ./defs-static || exit 1
+. test-lib.sh
 
-use_colors=no
-use_vpath=no
-
-. "$am_testauxdir"/testsuite-summary-checks.sh || exit 99
+use_colors=no; use_vpath=no
+. testsuite-summary-checks.sh
 
 ./configure
 

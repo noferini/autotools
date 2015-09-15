@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2012 Free Software Foundation, Inc.
+# Copyright (C) 2011-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 # passed down to the configure script of the subpackage.  This is
 # explicitly documented in the manual.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_CONFIG_SUBDIRS([subpkg])
@@ -74,8 +74,7 @@ $MAKE distcheck
 
 # ... but not when "make distcheck" is run from the subpackage.
 cd subpkg
-$MAKE distcheck >output 2>&1 && { cat output; exit 1; }
-cat output
+run_make -e FAIL -M distcheck
 grep '^configure:.* dc=KO am_dc=KO' output
 
 :

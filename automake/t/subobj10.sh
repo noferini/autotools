@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2006-2012 Free Software Foundation, Inc.
+# Copyright (C) 2006-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
 
 # PR 492: Test asm subdir-objects.
 
-required=gcc
-. ./defs || exit 1
+required='gcc -c-o'
+. test-init.sh
 
 cat > configure.ac << END
 AC_INIT([$me], [1.0])

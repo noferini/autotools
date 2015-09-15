@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2001-2012 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,10 +16,10 @@
 
 # Test to make sure Automake supports implicit rules with dot-less
 # extensions.  Also make sure that '.o' and '.obj' are handled like
-# '.$(OBJEXT)'.  See also related "semantic" tests suffix6b.test
-# and suffix6c.test.
+# '.$(OBJEXT)'.  See also related "semantic" tests 'suffix6b.sh'
+# and 'suffix6c.sh'.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat > Makefile.am << 'END'
 SUFFIXES = a b .$(OBJEXT) c .o .obj

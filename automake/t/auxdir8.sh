@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 1996-2012 Free Software Foundation, Inc.
+# Copyright (C) 1996-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@
 # the config auxdir should be implicitly defined to '.' since
 # the install-sh, mkinstalldirs, etc., scripts are in the top-level
 # directory.
-# Keep this in sync with sister tests auxdir6.test and auxdir7.test.
+# Keep this in sync with sister tests 'auxdir6.sh' and 'auxdir7.sh'.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_CONFIG_FILES([subdir/Makefile])

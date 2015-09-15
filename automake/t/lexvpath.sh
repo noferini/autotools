@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2010-2012 Free Software Foundation, Inc.
+# Copyright (C) 2010-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,10 +20,10 @@
 # 'make' and 'make distdir' and check whether the version of 'lexer.c'
 # to be distributed is up to date.
 
-# Please keep this in sync with sister test 'yaccvapth.test'.
+# Please keep this in sync with sister test 'yaccvapth.sh'.
 
 required='cc lex'
-. ./defs || exit 1
+. test-init.sh
 
 cat > lexoutroot.in << 'END'
 LEX_OUTPUT_ROOT='@LEX_OUTPUT_ROOT@'

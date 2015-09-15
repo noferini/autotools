@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2001-2012 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,10 +15,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Make sure distclean and maintainer-clean erase the right files.
-# This test is for in-tree builds; see sister test 'maintclean-vpath.test'
+# This test is for in-tree builds; see sister test 'maintclean-vpath.sh'
 # for VPATH builds.
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AC_CONFIG_FILES([bar sub/Makefile])

@@ -1,6 +1,6 @@
 # Process this file with autoconf to produce a configure script.
 
-# Copyright (C) 1995-2012 Free Software Foundation, Inc.
+# Copyright (C) 1995-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,9 +16,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.69])
-AC_INIT([GNU Automake], [1.12.2], [bug-automake@gnu.org])
+AC_INIT([GNU Automake], [1.15], [bug-automake@gnu.org])
 
-AC_CONFIG_SRCDIR([automake.in])
+AC_CONFIG_SRCDIR([bin/automake.in])
 AC_CONFIG_AUX_DIR([lib])
 
 AM_SILENT_RULES([yes])
@@ -39,12 +39,12 @@ AC_SUBST([am_AUTOUPDATE], ["${AUTOUPDATE-autoupdate}"])
 dnl We call AC_PROG_CC in an unusual way, and only for use in our
 dnl testsuite, so also use 'no-dependencies' and 'no-define' among
 dnl the automake options to avoid bloating and potential problems.
-AM_INIT_AUTOMAKE([dist-xz filename-length-max=99 color-tests
-		  parallel-tests silent-rules no-define no-dependencies])
+AM_INIT_AUTOMAKE([-Wall -Werror dist-xz filename-length-max=99
+                  no-define no-dependencies])
 
-## Keep this on a line of its own, since it must be found and processed
-## by the 'update-copyright' rule in our Makefile.
-RELEASE_YEAR=2012
+# Keep this on a line of its own, since it must be found and processed
+# by the 'update-copyright' rule in our Makefile.
+RELEASE_YEAR=2014
 AC_SUBST([RELEASE_YEAR])
 
 # The API version is the base version.  We must guarantee
@@ -63,10 +63,14 @@ AC_SUBST([amdir], ["\${pkgvdatadir}/am"])
 AC_SUBST([automake_acdir], ["\${datadir}/aclocal-$APIVERSION"])
 AC_SUBST([system_acdir], ["\${datadir}/aclocal"])
 
-# $AUTOMAKE and $ACLOCAL are always run after a "cd $top_srcdir",
-# hence '.' is really what we want for perllibdir, libdir, and acdir.
-ACLOCAL="perllibdir=\"`pwd`/lib$PATH_SEPARATOR./lib\" \"`pwd`/aclocal\" --acdir=m4 -I m4"
-AUTOMAKE="perllibdir=\"`pwd`/lib$PATH_SEPARATOR./lib\" \"`pwd`/automake\" --libdir=lib"
+# Our build system is bootstrapped with the bleeding-edge versions of
+# aclocal and automake, hence the remake rules must use those versions
+# as well.  The extra quoting is to cater to cases when the build
+# directory contains whitespace or shell metacharacters.
+ACLOCAL="\"`pwd`/t/wrap/aclocal-$APIVERSION\""
+AUTOMAKE="\"`pwd`/t/wrap/automake-$APIVERSION\""
+
+AC_PROG_LN_S
 
 AC_PATH_PROG([PERL], [perl])
 if test -z "$PERL"; then
@@ -81,32 +85,6 @@ is recommended.  If you have several perl versions
 installed, select the one Automake should use using
   ./configure PERL=/path/to/perl])
 }
-
-# We require ithreads support, and version 5.7.2 for CLONE.
-AC_CACHE_CHECK([whether $PERL supports ithreads], [am_cv_prog_PERL_ithreads],
-[if $PERL -e '
-    require 5.007_002;
-    use Config;
-    if ($Config{useithreads})
-      {
-	require threads;
-	import threads;
-	require Thread::Queue;
-	import Thread::Queue;
-	exit 0;
-      }
-    exit 1;' >&AS_MESSAGE_LOG_FD 2>&1
-then
-  am_cv_prog_PERL_ithreads=yes
-else
-  am_cv_prog_PERL_ithreads=no
-fi])
-if test $am_cv_prog_PERL_ithreads = yes; then
-  PERL_THREADS=1;
-else
-  PERL_THREADS=0;
-fi
-AC_SUBST([PERL_THREADS])
 
 # The test suite will skip some tests if tex is absent.
 AC_CHECK_PROG([TEX], [tex], [tex])
@@ -135,7 +113,7 @@ AC_CHECK_PROGS([LEX], [lex flex], [false])
 # following tests, but some users were unable to figure out that their
 # installation was broken since --version appeared to work.
 
-required_autoconf_version=2.62
+AC_SUBST([required_autoconf_version], [2.65])
 AC_CACHE_CHECK([whether autoconf is installed], [am_cv_autoconf_installed],
 [if AM_RUN_LOG([$am_AUTOCONF --version]);
 then
@@ -273,9 +251,6 @@ exit 77" >&AS_MESSAGE_LOG_FD 2>&1; test $? -eq 77; }
 # would emit "P=1" into file with /usr/xpg4/bin/sh from Solaris 10 and
 # /bin/sh from SunOS 5.11 and OpenBSD 4.7.
 #
-# Finally, we look for weird bugs and portability problems mentioned in
-# the Autoconf manual, and reject shells that suffers from them. (TODO)
-#
 # Use '$am_score' to indicate the degree of acceptability of the shell.
 # A score of "10" means that the shell is good enough for our needs;
 # a score of "9" means that the shell has some minor bugs or limitation,
@@ -297,6 +272,14 @@ AC_DEFUN([_AM_CHECK_CANDIDATE_SHELL],
       [], [am_score=1; break])
 
     _AM_CHECK_SHELL_FEATURE([$1],
+      [supports \${@%:@var}],
+      [zero='' one='x' twelve=' foobar baz!' \
+        && test ${@%:@zero} -eq 0 \
+        && test ${@%:@one} -eq 1 \
+        && test ${@%:@twelve} -eq 12],
+      [], [am_score=1; break])
+
+    _AM_CHECK_SHELL_FEATURE([$1],
       [supports \${var@%:@glob} and \${var%glob}],
       [v=a/b/c \
         && test ${v@%:@*/} = b/c \
@@ -311,9 +294,22 @@ AC_DEFUN([_AM_CHECK_CANDIDATE_SHELL],
       [], [am_score=1; break])
 
     _AM_CHECK_SHELL_FEATURE([$1],
+      [can define exit traps in a shell function],
+      [fail=0 && foo() { trap 'fail=1' 0; } && foo && test $fail = 0],
+      [], [am_score=1; break])
+
+    _AM_CHECK_SHELL_FEATURE([$1],
       [corrupts stderr with "set -x"],
       [(set -x; P=1 true 2>&3) 3>&1 2>/dev/null | grep P=1],
       [am_score=9], [])
+
+    echo 'return 34' > conftest-return.sh
+    echo 'ok=no' >> conftest-return.sh
+    _AM_CHECK_SHELL_FEATURE([$1],
+      [can return early from "dot-sourced" files],
+      [ok=yes; . ./conftest-return.sh; test $? -eq 34 && test $ok = yes],
+      [rm -f conftest-return.sh],
+      [rm -f conftest-return.sh; am_score=1; break])
 
     echo 'alias false=echo' > conftest-alias.sh
     echo 'false && test "$(false 97)" = 97' >> conftest-alias.sh
@@ -442,12 +438,25 @@ _AM_COMPILER_CAN_FAIL(dnl
 
 AS_IF([test x"$GCC" = x"yes"], [am_CC_is_GNU=yes], [am_CC_is_GNU=no])
 
+# On case-insensitive file systems (seen e.g. on Cygwin and Mac OS X)
+# we must avoid looking for 'CC', because that would be the same as
+# 'cc', and could cause $CXX to point to the C compiler, instead of
+# to a C++ compiler as expected (see automake bugs #11893 and #10766).
+# Similarly, we must avoid looking for 'RCC', as that can point to the
+# Qt4 "Resource Compiler": <http://doc.qt.digia.com/4.2/rcc.html>
+if test -f /bIn/rMdIr || test -f /uSr/bIn/rMdIr; then
+  # Case-insensitive file system, don't look for CC.
+  am_CC= am_RCC=
+else
+  am_CC=CC am_RCC=RCC
+fi
+
 # The list of C++ compilers here has been copied, pasted and edited
 # from 'lib/autoconf/c.m4:AC_PROG_CXX' in the Autoconf distribution.
 # Keep it in sync, or better again, find out a way to avoid this code
 # duplication.
 _AM_COMPILER_CAN_FAIL([AC_PROG_CXX(dnl
-  [aCC CC FCC KCC RCC xlC_r xlC c++ cxx cc++ gpp g++])],
+  [aCC $am_CC FCC KCC $am_RCC xlC_r xlC c++ cxx cc++ gpp g++])],
   [CXX=false; _AM_SKIP_COMP_TESTS([C++])])
 
 AS_IF([test x"$GXX" = x"yes"], [am_CXX_is_GNU=yes], [am_CXX_is_GNU=no])
@@ -491,9 +500,11 @@ if test $am_CC_is_GNU = yes; then
 else
   AC_CHECK_TOOLS([GNU_CC], [gcc], [false])
 fi
-AS_IF([AM_RUN_LOG([$GNU_CC --version && $GNU_CC -v])], [],
-      [AC_MSG_WARN([botched installation for GNU C compiler])
-       _AM_SKIP_COMP_TESTS([GNU C])])
+if test "$GNU_CC" != false; then
+  AS_IF([AM_RUN_LOG([$GNU_CC --version && $GNU_CC -v])], [],
+        [AC_MSG_WARN([botched installation for GNU C compiler])
+         _AM_SKIP_COMP_TESTS([GNU C])])
+fi
 
 # GNU C++ compiler.
 AC_ARG_VAR([GNU_CXX],      [GNU C++ compiler])
@@ -505,9 +516,11 @@ if test $am_CXX_is_GNU = yes; then
 else
   AC_CHECK_TOOLS([GNU_CXX], [g++ gpp], [false])
 fi
-AS_IF([AM_RUN_LOG([$GNU_CXX --version && $GNU_CXX -v])], [],
-      [AC_MSG_WARN([botched installation for GNU C++ compiler])
-       _AM_SKIP_COMP_TESTS([GNU C++])])
+if test "$GNU_CXX" != false; then
+  AS_IF([AM_RUN_LOG([$GNU_CXX --version && $GNU_CXX -v])], [],
+        [AC_MSG_WARN([botched installation for GNU C++ compiler])
+         _AM_SKIP_COMP_TESTS([GNU C++])])
+fi
 
 # GNU Fortran compiler.
 AC_ARG_VAR([GNU_FC],      [GNU Fortran compiler])
@@ -519,9 +532,11 @@ if test $am_FC_is_GNU = yes; then
 else
   AC_CHECK_TOOLS([GNU_FC], [gfortran], [false])
 fi
-AS_IF([AM_RUN_LOG([$GNU_FC --version && $GNU_FC -v])], [],
-      [AC_MSG_WARN([botched installation for GNU Fortran compiler])
-       _AM_SKIP_COMP_TESTS([GNU Fortran])])
+if test "$GNU_FC" != false; then
+  AS_IF([AM_RUN_LOG([$GNU_FC --version && $GNU_FC -v])], [],
+        [AC_MSG_WARN([botched installation for GNU Fortran compiler])
+         _AM_SKIP_COMP_TESTS([GNU Fortran])])
+fi
 
 # GNU Fortran 77 compiler.
 AC_ARG_VAR([GNU_F77],    [GNU Fortran 77 compiler])
@@ -533,17 +548,21 @@ if test $am_F77_is_GNU = yes; then
 else
   AC_CHECK_TOOLS([GNU_F77], [g77 gfortran], [false])
 fi
-AS_IF([AM_RUN_LOG([$GNU_F77 --version && $GNU_F77 -v])], [],
-      [AC_MSG_WARN([botched installation for GNU Fortran 77 compiler])
-      _AM_SKIP_COMP_TESTS([GNU Fortran 77])])
+if test "$GNU_F77" != false; then
+  AS_IF([AM_RUN_LOG([$GNU_F77 --version && $GNU_F77 -v])], [],
+        [AC_MSG_WARN([botched installation for GNU Fortran 77 compiler])
+        _AM_SKIP_COMP_TESTS([GNU Fortran 77])])
+fi
 
 # GNU Java compiler.
 AC_ARG_VAR([GNU_GCJ], [GNU Java compiler])
 AC_ARG_VAR([GNU_GCJFLAGS], [GNU Java compiler flags])
 AC_CHECK_TOOLS([GNU_GCJ], [gcj], [false])
-AS_IF([AM_RUN_LOG([$GNU_GCJ --version && $GNU_GCJ -v])], [],
-      [AC_MSG_WARN([botched installation for GNU Java compiler])
-      _AM_SKIP_COMP_TESTS([GNU Java])])
+if test "$GNU_GCJ" != false; then
+  AS_IF([AM_RUN_LOG([$GNU_GCJ --version && $GNU_GCJ -v])], [],
+        [AC_MSG_WARN([botched installation for GNU Java compiler])
+        _AM_SKIP_COMP_TESTS([GNU Java])])
+fi
 
 # If we have been able to find at least a working compiler above, we
 # know what the object and executable extensions for this platform are.
@@ -559,16 +578,14 @@ AC_SUBST([EXEEXT])
 ## ---------------------- ##
 
 AC_CONFIG_FILES([Makefile])
-
 AC_CONFIG_LINKS([GNUmakefile:GNUmakefile])
-AC_CONFIG_LINKS([defs:defs])
 
 AC_CONFIG_FILES([t/wrap/aclocal-${APIVERSION}:t/wrap/aclocal.in],
                 [chmod +x t/wrap/aclocal-${APIVERSION}],
-	        [APIVERSION=$APIVERSION])
+                [APIVERSION=$APIVERSION])
 AC_CONFIG_FILES([t/wrap/automake-${APIVERSION}:t/wrap/automake.in],
                 [chmod +x t/wrap/automake-${APIVERSION}],
-	        [APIVERSION=$APIVERSION])
+                [APIVERSION=$APIVERSION])
 
 AC_OUTPUT
 
@@ -586,7 +603,8 @@ am_release_type=`AS_ECHO(["$PACKAGE_VERSION"]) | LC_ALL=C awk ["
   /^$am_beta_version_rx$/ { print \"beta version\"; exit(0); }
   { print \"development snapshot\"; }"]`
 
-test "$am_release_type" = stable || cat <<EOF
+# '$silent' is set to yes if configure is passed the '--quiet' option.
+test "$am_release_type" = stable || test "$silent" = yes || cat <<EOF
 
 WARNING: You are about to use a $am_release_type of automake.
 WARNING: It might easily suffer from new bugs or regressions.

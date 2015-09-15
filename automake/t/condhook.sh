@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (C) 2004-2012 Free Software Foundation, Inc.
+# Copyright (C) 2004-2014 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,10 +15,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Test install when a conditional install-*-hook is not defined.
-# Keep this in sync with sister test condhook2.test.
+# Keep this in sync with sister test 'condhook2.sh'.
 # Report by Nik A. Melchior (PR/428).
 
-. ./defs || exit 1
+. test-init.sh
 
 cat >> configure.ac << 'END'
 AM_CONDITIONAL([TEST], [false])
