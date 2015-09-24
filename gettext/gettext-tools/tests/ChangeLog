@@ -1,3 +1,377 @@
+2015-09-11  Daiki Ueno  <ueno@gnu.org>
+
+	* gettext 0.19.6 released.
+
+2015-06-11  Philip Withnall  <philip.withnall@collabora.co.uk>
+
+	xgettext: add support for AppData files
+	* Makefile.am (TESTS): Add xgettext-appdata-1.
+	* xgettext-appdata-1: New file.
+
+2015-08-21  Daiki Ueno  <ueno@gnu.org>
+
+	* Makefile.am (check_PROGRAMS): Rename from noinst_PROGRAMS, to
+	defer the compilation until required.
+
+2015-07-28  Daiki Ueno  <ueno@gnu.org>
+
+	* autopoint-2: Add checks for AM_GNU_GETTEXT_REQUIRE_VERSION.
+
+2015-07-28  Daiki Ueno  <ueno@gnu.org>
+
+	* init-env.in (ARCHIVE_VERSION): New substituted variable.
+	* autopoint-2: Use ARCHIVE_VERSION, instead of the hard-coded
+	version string.
+	* autopoint-3: Likewise.
+
+2015-07-10  Daiki Ueno  <ueno@gnu.org>
+
+	* gettext 0.19.5 released.
+
+2015-06-24  Daiki Ueno  <ueno@gnu.org>
+
+	* autopoint-2 (required_gettext_version): Update to 0.19.5.
+	* autopoint-3 (required_gettext_version): Likewise.
+
+2015-06-24  Daiki Ueno  <ueno@gnu.org>
+
+	* lang-bash: Skip if "bash --help" isn't localized on Mac OS X.
+
+2015-06-24  Daiki Ueno  <ueno@gnu.org>
+
+	* msgfilter-8: Port the "echo -n" equivalent from gettext-2.
+	Reported by Paul Zimmermann in:
+	<https://lists.gnu.org/archive/html/bug-gettext/2015-06/msg00019.html>.
+
+2015-06-24  Daiki Ueno  <ueno@gnu.org>
+
+	* cldr-plurals-1: Skip if XML is not supported.
+	* msginit-4: Likewise.
+
+2015-06-24  Daiki Ueno  <ueno@gnu.org>
+
+	* format-kde-kuit-1: Skip if KDE KUIT format is not supported.
+	* format-kde-kuit-2: Likewise.
+	Suggested by Chusslove Illich.
+
+2015-06-23  Daiki Ueno  <ueno@gnu.org>
+
+	* msginit-4: Don't check the Project-Id-Version: field, which
+	cannot be generated since we can't rely on the project-id script
+	when $builddir != $srcdir.
+
+2015-06-23  Daiki Ueno  <ueno@gnu.org>
+
+	* msginit-4: New file.
+	* common/supplemental/plurals.xml: New data file.
+	* Makefile.am (TESTS): Add new tests.
+	(EXTRA_DIST): Add new data file.
+
+2015-06-22  Daiki Ueno  <ueno@gnu.org>
+
+	* cldr-plurals-1: New file.
+	* Makefile.am (TESTS): Add new tests.
+
+2015-03-12  Daiki Ueno  <ueno@gnu.org>
+
+	* Makefile.am (sentence_CPPFLAGS): Add -I$(top_srcdir)/src and
+	$(AM_CPPFLAGS).
+
+2015-03-05  Daiki Ueno  <ueno@gnu.org>
+
+	* format-kde-kuit-1: New file.
+	* format-kde-kuit-2: New file.
+	* Makefile.am (TESTS): Add new tests.
+
+2015-03-03  Daiki Ueno  <ueno@gnu.org>
+
+	* xgettext-14: New file.
+	* sentence.c: New file
+	* Makefile.am (TESTS): Add new tests.
+	(noinst_PROGRAMS): Add 'sentence'.
+	(sentence_SOURCES): New variable.
+	(sentence_CPPFLAGS): New variable.
+	(sentence_LDADD): New variable.
+
+2015-02-06  Daiki Ueno  <ueno@gnu.org>
+
+	tests: Fix "broken pipe" error in msgfilter-7
+	* msgfilter-7: Eat up filter input to avoid EPIPE in the parent
+	msgfilter process, which was exposed on AIX 5.
+	Reported by Michael Felt.
+
+2015-02-05  Alex Henrie  <alexhenrie24@gmail.com>  (tiny change)
+
+	* xgettext-13: New file.
+	* Makefile.am (TESTS): Add new test.
+	* mm-viet.out: Adjust to the recent line-wrapping behavior change.
+
+2015-01-29  Daiki Ueno  <ueno@gnu.org>
+
+	* msgexec-6: New file.
+	* Makefile.am (TESTS): Add new test.
+
+2015-01-28  Daiki Ueno  <ueno@gnu.org>
+
+	* msgfilter-8: New file.
+	* Makefile.am (TESTS): Add new test.
+
+2015-01-16  Daiki Ueno  <ueno@gnu.org>
+
+	* xgettext-desktop-1: Check "invalid non-blank character" warning.
+
+2015-01-13  Daiki Ueno  <ueno@gnu.org>
+
+	* xgettext-c-20: Improve test coverage of raw string tests.
+
+2015-01-13  Daiki Ueno  <ueno@gnu.org>
+
+	* xgettext-c-20: Adjust to the latest xgettext C++ scanner change;
+	don't accept unbalanced prefix in raw string literal.
+
+2015-01-13  Daiki Ueno  <ueno@gnu.org>
+
+	* xgettext-c-20: Adjust the source file name from *.c to *.cc to
+	enable handling of raw string literals.
+
+2014-12-24  Daiki Ueno  <ueno@gnu.org>
+
+	* gettext 0.19.4 released.
+
+2014-12-17  Daiki Ueno  <ueno@gnu.org>
+
+	* xgettext-sh-3: Test Bash ANSI-C quoting.
+
+2014-12-12  Daiki Ueno  <ueno@gnu.org>
+
+	* format-lisp-2, format-scheme-2: Test type compatibility with
+	non-strict checking mode.
+
+2014-12-09  Daiki Ueno  <ueno@gnu.org>
+
+	* gettext-8-prg.c: Include <assert.h>.
+	(main): Check return value of 'gettext'.
+
+2014-12-09  Daiki Ueno  <ueno@gnu.org>
+
+	* gettext-8-prg.c (main): Release allocated memory.  Spotted by
+	clang-analyzer.
+
+2014-12-09  Daiki Ueno  <ueno@gnu.org>
+
+	tests: Test msgcat --sort-by-file option
+	* msgcat-20: New file.
+	* Makefile.am (TESTS): Add new test.
+
+2014-12-09  Daiki Ueno  <ueno@gnu.org>
+
+	tests: Improve test coverage of Lua scanner
+	* xgettext-lua-1: Test nested and unmatched brackets.
+
+2014-12-09  Daiki Ueno  <ueno@gnu.org>
+
+	* xgettext-vala-1: Don't copy the test program out of the test
+	directory.  Fix commit 2ff7a105.
+
+2014-12-09  Daiki Ueno  <ueno@gnu.org>
+
+	tests: Improve test coverage of Desktop scanner
+	* xgettext-desktop-1: Test invalid input and blank lines.
+
+2014-12-07  Daiki Ueno  <ueno@gnu.org>
+
+	tests: Improve test coverage of Vala scanner
+	* xgettext-vala-1: Test regex literal right after arithmetic
+	assignment operators, and the case '@' is not followed by a
+	template string.
+
+2014-12-05  Daiki Ueno  <ueno@gnu.org>
+
+	tests: Add more tests for integer overflow when reading MO file
+	* msgunfmt-3: Check overflow-[1-6].mo.
+	* Makefile.am (EXTRA_DIST): Add more test data for msgunfmt
+	integer overflow.
+
+2014-12-04  Daiki Ueno  <ueno@gnu.org>
+
+	tests: Improve test coverage of GSettings scanner
+	* xgettext-gsettings-1: Check empty string and multiline comment.
+
+2014-12-03  Daiki Ueno  <ueno@gnu.org>
+
+	* msgunfmt-3: Locate overflow.mo in $abs_srcdir instead of '..'.
+
+2014-12-02  Daiki Ueno  <ueno@gnu.org>
+
+	tests: Add test for C++11 string literals
+	* xgettext-c-20: New file.
+	* Makefile.am (TESTS): Add new test.
+
+2014-12-01  Daiki Ueno  <ueno@gnu.org>
+
+	tests: Add more tests for C# Unicode handling
+	* xgettext-csharp-1: Test verbatim string.
+	* xgettext-csharp-2: Test Unicode identifiers.
+
+2014-12-01  Daiki Ueno  <ueno@gnu.org>
+
+	tests: Add test for Unicode surrogate characters in C#
+	* xgettext-csharp-8: New file.
+	* Makefile.am (TESTS): Add new test.
+
+2014-11-28  Daiki Ueno  <ueno@gnu.org>
+
+	tests: Add test for empty msgstr passed to msgfilter
+	* msgfilter-7: New file.
+	* Makefile.am (TESTS): Add new test.
+
+2014-11-18  Daiki Ueno  <ueno@gnu.org>
+
+	tests: Add test for integer overflow when reading MO file
+	* msgunfmt-3: New file.
+	* Makefile.am (TESTS): Add new test.
+	(EXTRA_DIST): Add data file for msgunfmt-3.
+
+2014-10-28  Daiki Ueno  <ueno@gnu.org>
+
+	xgettext: Allow plural extraction from a single argument function
+	* xgettext-12: Test a single argument function.
+
+2014-10-28  Daiki Ueno  <ueno@gnu.org>
+
+	tests: Add test for same ARGNUM1/ARGNUM2 given to xgettext -k
+	* xgettext-12: New file.
+	* Makefile.am (TESTS): Add new test.
+
+2014-10-15  Daiki Ueno  <ueno@gnu.org>
+
+	* gettext 0.19.3 released.
+
+2014-10-15  Daiki Ueno  <ueno@gnu.org>
+
+	* autopoint-2 (required_gettext_version): Update to 0.19.3.
+	* autopoint-3 (required_gettext_version): Likewise.
+
+2014-10-12  Daiki Ueno  <ueno@gnu.org>
+
+	tests: Avoid sed error on Mac OS X when dealing with binary input
+	Reported by Ramsey Dow in:
+	<http://lists.gnu.org/archive/html/bug-gettext/2014-07/msg00002.html>.
+	* msgmerge-compendium-6: Run sed with LC_ALL=C, to avoid 'illegal
+	byte sequence' error on Mac OS X.
+	* format-sh-1: Likewise.
+
+2014-10-10  Daiki Ueno  <ueno@gnu.org>
+
+	tests: Add test for Debian bug#764580
+	* autopoint-2: Check if m4_assert is properly redefined while
+	tracing.
+
+2014-10-08  Daiki Ueno  <ueno@gnu.org>
+
+	tests: Improve test coverage of C and Vala scanners
+	* xgettext-c-4: Check more trigraphs.
+	* xgettext-c-2: Check floating point literal.
+	* xgettext-c-19: Check out-of-range Unicode character, "\U"
+	character escape, incomplete "\u" escape, and surrogates.
+	* xgettext-vala-1: Check unterminated regexp literal, floating
+	point literal, string template, "/=" operator, multi-line
+	comments, and backslash-escaped character inside regexp literal.
+
+2014-10-03  Daiki Ueno  <ueno@gnu.org>
+
+	* lang-c++: Check if CXX is "no", not ":".  See commit e854d2c7
+	for the rationale.
+
+2014-10-02  Daiki Ueno  <ueno@gnu.org>
+
+	* autopoint-3: Invoke AC_CONFIG_MACRO_DIR after AC_INIT, not
+	before.
+
+2014-10-01  Daiki Ueno  <ueno@gnu.org>
+
+	tests: Adjust textdomain directory for Solaris 11
+	* init.cfg (prepare_locale_): New function.
+	* lang-bash: Call prepare_locale_ before running locale-dependant
+	tests.
+	* lang-c: Likewise.
+	* lang-c++: Likewise.
+	* lang-clisp: Likewise.
+	* lang-csharp: Likewise.
+	* lang-gawk: Likewise.
+	* lang-guile: Likewise.
+	* lang-java: Likewise.
+	* lang-javascript: Likewise.
+	* lang-librep: Likewise.
+	* lang-lua: Likewise.
+	* lang-objc: Likewise.
+	* lang-pascal: Likewise.
+	* lang-perl-1: Likewise.
+	* lang-perl-2: Likewise.
+	* lang-php: Likewise.
+	* lang-python-1: Likewise.
+	* lang-python-2: Likewise.
+	* lang-sh: Likewise.
+	* lang-smalltalk: Likewise.
+	* lang-tcl: Likewise.
+	* lang-vala: Likewise.
+
+2014-10-01  Daiki Ueno  <ueno@gnu.org>
+
+	tests: Stop redundant textdomain directory creation
+	This was introduced by commit 3533f6cc when we didn't use separate
+	test directory for each test.  Now that we switched to init.sh, we
+	don't need to worry about filename conflicts.
+	* lang-c: Stop redundant textdomain directory creation.
+	* lang-c++: Likewise.
+	* lang-objc: Likewise.
+	* lang-sh: Likewise.
+	* lang-bash: Likewise.
+	* lang-python-1: Likewise.
+	* lang-python-2: Likewise.
+	* lang-clisp: Likewise.
+	* lang-elisp: Likewise.
+	* lang-librep: Likewise.
+	* lang-guile: Likewise.
+	* lang-smalltalk: Likewise.
+	* lang-java: Likewise.
+	* lang-csharp: Likewise.
+	* lang-gawk: Likewise.
+	* lang-pascal: Likewise.
+	* lang-ycp: Likewise.
+	* lang-tcl: Likewise.
+	* lang-perl-1: Likewise.
+	* lang-perl-2: Likewise.
+	* lang-php: Likewise.
+	* lang-po: Likewise.
+	* lang-rst: Likewise.
+	* lang-lua: Likewise.
+	* lang-javascript: Likewise.
+	* lang-vala: Likewise.
+
+2014-09-30  Daiki Ueno  <ueno@gnu.org>
+
+	* autopoint-1: Don't rely on non-portable "grep -q".
+	* msginit-3: Likewise.
+	* msgen-1: Likewise.
+
+2014-09-30  Daiki Ueno  <ueno@gnu.org>
+
+	* xgettext-c-19: Test octal string escape.
+
+2014-09-24  Daiki Ueno  <ueno@gnu.org>
+
+	* xgettext-c-19: Use iconv -f/-t instead of non-portable
+	--from/--to.
+
+2014-09-05  Daiki Ueno  <ueno@gnu.org>
+
+	* autopoint-3: Use libtool when compiling included libintl.
+
+2014-09-05  Daiki Ueno  <ueno@gnu.org>
+
+	* autopoint-2, autopoint-3: Collect error output.
+
 2014-07-14  Daiki Ueno  <ueno@gnu.org>
 
 	* gettext 0.19.2 released.
