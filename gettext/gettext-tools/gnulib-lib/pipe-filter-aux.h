@@ -1,5 +1,5 @@
 /* Auxiliary code for filtering of data through a subprocess.
-   Copyright (C) 2001-2003, 2008-2014 Free Software Foundation, Inc.
+   Copyright (C) 2001-2003, 2008-2015 Free Software Foundation, Inc.
    Written by Bruno Haible <haible@clisp.cons.org>, 2009.
 
    This program is free software: you can redistribute it and/or modify
@@ -86,25 +86,6 @@ nonintr_write (int fd, const void *buf, size_t count)
 }
 #undef write /* avoid warning on VMS */
 #define write nonintr_write
-
-# if HAVE_SELECT
-
-PIPE_FILTER_AUX_INLINE int
-nonintr_select (int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds,
-                struct timeval *timeout)
-{
-  int retval;
-
-  do
-    retval = select (n, readfds, writefds, exceptfds, timeout);
-  while (retval < 0 && errno == EINTR);
-
-  return retval;
-}
-#  undef select /* avoid warning on VMS */
-#  define select nonintr_select
-
-# endif
 
 #endif
 

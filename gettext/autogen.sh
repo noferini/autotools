@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (C) 2003-2014 Free Software Foundation, Inc.
+# Copyright (C) 2003-2015 Free Software Foundation, Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -245,6 +245,7 @@ if ! $skip_gnulib; then
       sys_stat
       sys_time
       term-styled-ostream
+      unictype/ctype-space
       unilbrk/ulc-width-linebreaks
       uniname/uniname
       unistd
@@ -349,8 +350,11 @@ if ! $skip_gnulib; then
       stdbool
       stdio
       stdlib
+      stpcpy
+      stpncpy
       strchrnul
       strerror
+      unictype/ctype-space
       unilbrk/ulc-width-linebreaks
       unistr/u8-mbtouc
       unistr/u8-mbtoucr
@@ -420,7 +424,7 @@ fi
 )
 
 (cd gettext-runtime
- echo "$0: geneating configure in gettext-runtime..."
+ echo "$0: generating configure in gettext-runtime..."
  aclocal -I m4 -I ../m4 -I gnulib-m4
  autoconf
  autoheader && touch config.h.in
@@ -428,7 +432,7 @@ fi
 )
 
 (cd gettext-tools/examples
- echo "$0: geneating configure in gettext-tools/examples..."
+ echo "$0: generating configure in gettext-tools/examples..."
  aclocal -I ../../gettext-runtime/m4 -I ../../m4
  autoconf
  automake --add-missing --copy
@@ -444,9 +448,22 @@ cp -p gettext-runtime/po/en@quot.header gettext-tools/po/en@quot.header
 cp -p gettext-runtime/po/en@boldquot.header gettext-tools/po/en@boldquot.header
 cp -p gettext-runtime/po/insert-header.sin gettext-tools/po/insert-header.sin
 cp -p gettext-runtime/po/remove-potcdate.sin gettext-tools/po/remove-potcdate.sin
+# Those two files might be newer than Gnulib's.
+sed_extract_serial='s/^#.* serial \([^ ]*\).*/\1/p
+1q'
+for file in intl.m4 po.m4; do
+  existing_serial=`sed -n -e "$sed_extract_serial" < "gettext-tools/gnulib-m4/$file"`
+  gettext_serial=`sed -n -e "$sed_extract_serial" < "gettext-runtime/m4/$file"`
+  if test -n "$existing_serial" && test -n "$gettext_serial" \
+        && test "$existing_serial" -ge "$gettext_serial" 2> /dev/null; then
+    :
+  else
+    cp -p "gettext-runtime/m4/$file" "gettext-tools/gnulib-m4/$file"
+  fi
+done
 
 (cd gettext-tools
- echo "$0: geneating configure in gettext-tools..."
+ echo "$0: generating configure in gettext-tools..."
  aclocal -I m4 -I ../gettext-runtime/m4 -I ../m4 -I gnulib-m4 -I libgrep/gnulib-m4 -I libgettextpo/gnulib-m4
  autoconf
  autoheader && touch config.h.in
