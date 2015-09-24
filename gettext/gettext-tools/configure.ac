@@ -1,5 +1,5 @@
 dnl Configuration for the gettext-tools directory of GNU gettext
-dnl Copyright (C) 1995-1999, 2000-2011 Free Software Foundation, Inc.
+dnl Copyright (C) 1995-2011, 2015 Free Software Foundation, Inc.
 dnl
 dnl This program is free software: you can redistribute it and/or modify
 dnl it under the terms of the GNU General Public License as published by
@@ -458,6 +458,9 @@ changequote([,])dnl
 fi
 AC_SUBST([ARCHIVE_FORMAT])
 
+ARCHIVE_VERSION=0.19.6
+AC_SUBST([ARCHIVE_VERSION])
+
 dnl Check for tools needed for formatting the documentation.
 ac_aux_dir_abs=`cd $ac_aux_dir && pwd`
 AC_PATH_PROG([DVIPS], [dvips], [$ac_aux_dir_abs/missing dvips])
@@ -508,8 +511,10 @@ AC_CONFIG_FILES([doc/Makefile])
 
 AC_CONFIG_FILES([intl/Makefile:../gettext-runtime/intl/Makefile.in], [
   # Change srcdir variable so that it points to ../gettext-runtime/intl.
+  # Change PLURAL_OBJECT variable so that pluralx.c is used instead of plural.c.
   sed -e 's|^srcdir =.*$|srcdir = $(top_srcdir)/../gettext-runtime/intl|' \
       -e 's|^VPATH =.*$||' \
+      -e 's|^PLURAL_OBJECT = .*$|PLURAL_OBJECT = pluralx.\$lo|' \
     < intl/Makefile > intl/Makefile.tmp
   mv intl/Makefile.tmp intl/Makefile
   ])

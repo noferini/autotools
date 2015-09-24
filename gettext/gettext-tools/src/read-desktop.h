@@ -1,5 +1,6 @@
 /* Reading Desktop Entry files.
-   Copyright (C) 1995-1998, 2000-2003, 2005-2006, 2008-2009, 2014 Free Software Foundation, Inc.
+   Copyright (C) 1995-1998, 2000-2003, 2005-2006, 2008-2009, 2014-2015
+   Free Software Foundation, Inc.
    This file was written by Daiki Ueno <ueno@gnu.org>.
 
    This program is free software: you can redistribute it and/or modify
@@ -63,8 +64,8 @@ struct desktop_reader_class_ty
   /* what to do with a comment */
   void (*handle_comment) (struct desktop_reader_ty *pop, const char *s);
 
-  /* what to do with other lines */
-  void (*handle_text) (struct desktop_reader_ty *pop, const char *s);
+  /* what to do with a blank line */
+  void (*handle_blank) (struct desktop_reader_ty *pop, const char *s);
 };
 
 /* This next structure defines the base class passed to the methods.
@@ -99,8 +100,8 @@ void desktop_reader_handle_pair (desktop_reader_ty *reader,
 void desktop_reader_handle_comment (desktop_reader_ty *reader,
                                     const char *s);
 
-void desktop_reader_handle_text (desktop_reader_ty *reader,
-                                 const char *s);
+void desktop_reader_handle_blank (desktop_reader_ty *reader,
+                                  const char *s);
 
 
 void desktop_parse (desktop_reader_ty *reader, FILE *file,

@@ -1,5 +1,5 @@
 # DO NOT EDIT! GENERATED AUTOMATICALLY!
-# Copyright (C) 2002-2014 Free Software Foundation, Inc.
+# Copyright (C) 2002-2015 Free Software Foundation, Inc.
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ AC_DEFUN([gtpo_EARLY],
   AC_REQUIRE([gl_PROG_AR_RANLIB])
   AC_REQUIRE([AM_PROG_CC_C_O])
   # Code from module absolute-header:
+  # Code from module alignof:
   # Code from module alloca-opt:
   # Code from module basename:
   # Code from module c-ctype:
@@ -129,6 +130,7 @@ AC_DEFUN([gtpo_EARLY],
   # Code from module stdio:
   # Code from module stdlib:
   # Code from module stpcpy:
+  # Code from module stpncpy:
   # Code from module strchrnul:
   # Code from module streq:
   # Code from module strerror:
@@ -148,6 +150,8 @@ AC_DEFUN([gtpo_EARLY],
   # Code from module tls:
   # Code from module uniconv/base:
   # Code from module uniconv/u8-conv-from-enc:
+  # Code from module unictype/base:
+  # Code from module unictype/ctype-space:
   # Code from module unilbrk/base:
   # Code from module unilbrk/tables:
   # Code from module unilbrk/u8-possible-linebreaks:
@@ -384,6 +388,12 @@ AC_DEFUN([gtpo_INIT],
     gl_PREREQ_STPCPY
   fi
   gl_STRING_MODULE_INDICATOR([stpcpy])
+  gl_FUNC_STPNCPY
+  if test $HAVE_STPNCPY = 0 || test $REPLACE_STPNCPY = 1; then
+    AC_LIBOBJ([stpncpy])
+    gl_PREREQ_STPNCPY
+  fi
+  gl_STRING_MODULE_INDICATOR([stpncpy])
   gl_FUNC_STRCHRNUL
   if test $HAVE_STRCHRNUL = 0 || test $REPLACE_STRCHRNUL = 1; then
     AC_LIBOBJ([strchrnul])
@@ -429,15 +439,18 @@ AC_DEFUN([gtpo_INIT],
   gl_THREADLIB
   gl_HEADER_TIME_H
   gl_TLS
-  gl_LIBUNISTRING_LIBHEADER([0.9], [uniconv.h])
+  gl_LIBUNISTRING_LIBHEADER([0.9.4], [uniconv.h])
   gl_LIBUNISTRING_MODULE([0.9], [uniconv/u8-conv-from-enc])
-  gl_LIBUNISTRING_LIBHEADER([0.9], [unilbrk.h])
+  gl_LIBUNISTRING_LIBHEADER([0.9.4], [unictype.h])
   AC_REQUIRE([AC_C_INLINE])
-  gl_LIBUNISTRING_MODULE([0.9.4], [unilbrk/u8-possible-linebreaks])
-  gl_LIBUNISTRING_MODULE([0.9.4], [unilbrk/u8-width-linebreaks])
-  gl_LIBUNISTRING_MODULE([0.9.4], [unilbrk/ulc-width-linebreaks])
+  gl_LIBUNISTRING_MODULE([0.9.6], [unictype/ctype-space])
+  gl_LIBUNISTRING_LIBHEADER([0.9.4], [unilbrk.h])
+  AC_REQUIRE([AC_C_INLINE])
+  gl_LIBUNISTRING_MODULE([0.9.6], [unilbrk/u8-possible-linebreaks])
+  gl_LIBUNISTRING_MODULE([0.9.6], [unilbrk/u8-width-linebreaks])
+  gl_LIBUNISTRING_MODULE([0.9.6], [unilbrk/ulc-width-linebreaks])
   gl_UNISTD_H
-  gl_LIBUNISTRING_LIBHEADER([0.9.2], [unistr.h])
+  gl_LIBUNISTRING_LIBHEADER([0.9.4], [unistr.h])
   gl_MODULE_INDICATOR([unistr/u16-mbtouc])
   gl_LIBUNISTRING_MODULE([0.9], [unistr/u16-mbtouc])
   gl_LIBUNISTRING_MODULE([0.9], [unistr/u8-check])
@@ -451,9 +464,9 @@ AC_DEFUN([gtpo_INIT],
   gl_LIBUNISTRING_MODULE([0.9], [unistr/u8-prev])
   gl_MODULE_INDICATOR([unistr/u8-uctomb])
   gl_LIBUNISTRING_MODULE([0.9], [unistr/u8-uctomb])
-  gl_LIBUNISTRING_LIBHEADER([0.9], [unitypes.h])
-  gl_LIBUNISTRING_LIBHEADER([0.9], [uniwidth.h])
-  gl_LIBUNISTRING_MODULE([0.9.4], [uniwidth/width])
+  gl_LIBUNISTRING_LIBHEADER([0.9.4], [unitypes.h])
+  gl_LIBUNISTRING_LIBHEADER([0.9.4], [uniwidth.h])
+  gl_LIBUNISTRING_MODULE([0.9.6], [uniwidth/width])
   gl_FUNC_GLIBC_UNLOCKED_IO
   gl_FUNC_VASNPRINTF
   gl_FUNC_VASPRINTF
@@ -616,6 +629,7 @@ AC_DEFUN([gtpo_FILE_LIST], [
   build-aux/snippet/unused-parameter.h
   build-aux/snippet/warn-on-use.h
   doc/relocatable.texi
+  lib/alignof.h
   lib/alloca.in.h
   lib/asnprintf.c
   lib/asprintf.c
@@ -733,6 +747,7 @@ AC_DEFUN([gtpo_FILE_LIST], [
   lib/stdio.in.h
   lib/stdlib.in.h
   lib/stpcpy.c
+  lib/stpncpy.c
   lib/str-two-way.h
   lib/strchrnul.c
   lib/strchrnul.valgrind
@@ -754,6 +769,10 @@ AC_DEFUN([gtpo_FILE_LIST], [
   lib/time.in.h
   lib/uniconv.in.h
   lib/uniconv/u8-conv-from-enc.c
+  lib/unictype.in.h
+  lib/unictype/bitmap.h
+  lib/unictype/ctype_space.c
+  lib/unictype/ctype_space.h
   lib/unilbrk.in.h
   lib/unilbrk/lbrkprop1.h
   lib/unilbrk/lbrkprop2.h
@@ -865,6 +884,7 @@ AC_DEFUN([gtpo_FILE_LIST], [
   m4/msvc-inval.m4
   m4/msvc-nothrow.m4
   m4/multiarch.m4
+  m4/obstack.m4
   m4/off_t.m4
   m4/open.m4
   m4/pathmax.m4
@@ -887,6 +907,7 @@ AC_DEFUN([gtpo_FILE_LIST], [
   m4/stdio_h.m4
   m4/stdlib_h.m4
   m4/stpcpy.m4
+  m4/stpncpy.m4
   m4/strchrnul.m4
   m4/strerror.m4
   m4/string_h.m4
